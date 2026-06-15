@@ -8,8 +8,6 @@ Set these in GitHub:
 
 `Settings -> Secrets and variables -> Actions -> New repository secret`
 
-- `VPS_HOST`: `76.13.190.19`
-- `VPS_USER`: `root`
 - `VPS_SSH_KEY`: private deploy key for GitHub Actions
 - `VITE_SITE_URL`: `https://verbito.ai`
 - `VITE_SUPABASE_URL`: production Supabase URL
@@ -17,6 +15,8 @@ Set these in GitHub:
 - `VITE_STRIPE_PUBLISHABLE_KEY`: live Stripe publishable key
 
 Do not put Stripe secret keys, OpenAI keys, Supabase service role keys, or webhook secrets in GitHub Actions frontend build secrets.
+
+`VPS_HOST` and `VPS_USER` are stored directly in `.github/workflows/deploy.yml` because they are not secret values. The only VPS credential required in GitHub Secrets is `VPS_SSH_KEY`.
 
 ## VPS SSH Key Setup
 
