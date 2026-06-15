@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { Check,ChevronDown,ChevronUp,Sparkles,Zap } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import SEOHead from '../components/shared/SEOHead';
+import { useAuth } from '../hooks/useAuth';
 import { createCheckoutSession } from '../services/stripe';
 import type { BillingPeriod,PlanType } from '../types';
 
@@ -92,6 +93,8 @@ function SimpleFaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function Pricing() {
+  const navigate = useNavigate();
+  const { isLoggedIn, loading: authLoading } = useAuth();
   const [isAnnual, setIsAnnual] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -105,14 +108,24 @@ export default function Pricing() {
     const planId = planName.toLowerCase() as PlanType;
     if (planId === 'free') return;
 
+    const billingPeriod: BillingPeriod = isAnnual ? 'yearly' : 'monthly';
+    if (authLoading) {
+      setCheckoutError('Checking your account. Please try again in a moment.');
+      return;
+    }
+
+    if (!isLoggedIn) {
+      navigate(`/signup?plan=${planId}&billing=${billingPeriod}`);
+      return;
+    }
+
     setCheckoutLoading(planId);
     setCheckoutError(null);
     try {
-      const billingPeriod: BillingPeriod = isAnnual ? 'yearly' : 'monthly';
       const { url } = await createCheckoutSession(planId, billingPeriod);
       window.location.assign(url);
     } catch (error) {
-      setCheckoutError(error instanceof Error ? error.message : 'Unable to start checkout.');
+      setCheckoutError(error instanceof Error ? error.message : 'Unable to start checkout. Please try again or contact support.');
     } finally {
       setCheckoutLoading(null);
     }
