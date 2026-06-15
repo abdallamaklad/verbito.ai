@@ -71,7 +71,10 @@ PY
 
 cd /root/qulture
 docker compose -f docker-compose.prod.yml --env-file .env config >/tmp/qulture-compose-check.yml
-docker compose -f docker-compose.prod.yml --env-file .env up -d caddy
+# The Caddy container bind-mounts /var/www/verbito/current. Because that path is a
+# symlink to a release directory, recreate the container so Docker remounts the
+# newly selected release target.
+docker compose -f docker-compose.prod.yml --env-file .env up -d --force-recreate caddy
 docker exec qulture-caddy-1 caddy validate --config /etc/caddy/Caddyfile
 
 find /var/www/verbito/releases -mindepth 1 -maxdepth 1 -type d | sort | head -n -5 | xargs -r rm -rf
