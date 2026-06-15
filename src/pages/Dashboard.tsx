@@ -1,5 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useUsage } from '@/hooks/useUsage';
+import { createPromptCollection,deleteSavedPrompt,getCoursePurchases,getPromptCollections,getPromptGenerations,getSavedPrompts,updateProfile } from '@/services/supabase';
+import type { CoursePurchase,PromptCollection,PromptGenerationHistoryItem,SavedPrompt } from '@/types';
 import { motion } from 'framer-motion';
 import {
 AlertTriangle,
@@ -10,6 +12,7 @@ Copy,
 CreditCard,
 FolderOpen,
 GraduationCap,
+History,
 Plus,
 Search,
 Shield,
@@ -19,11 +22,13 @@ User,
 Wand2,
 Zap
 } from 'lucide-react';
-import { useMemo,useState } from 'react';
-import { Link,useSearchParams } from 'react-router-dom';
+import { useEffect,useMemo,useState } from 'react';
+import type React from 'react';
+import { Link,Navigate,useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import SEOHead from '../components/shared/SEOHead';
+import { Toaster } from '../components/ui/sonner';
 import { createPortalSession } from '../services/stripe';
 
 /* ------------------------------------------------------------------ */
@@ -39,31 +44,6 @@ const fadeUp = {
   }),
 };
 
-/* ------------------------------------------------------------------ */
-/*  MOCK DATA                                                          */
-/* ------------------------------------------------------------------ */
-
-const mockRecentGenerations = [
-  { id: '1', goal: 'Write a marketing email for a fitness app', category: 'Marketing', date: 'Jan 15, 2026', score: 94, prompt: 'Act as a senior email copywriter...' },
-  { id: '2', goal: 'Debug a React component with useEffect', category: 'Coding', date: 'Jan 14, 2026', score: 91, prompt: 'Act as a senior React developer...' },
-  { id: '3', goal: 'Create a lesson plan for high school biology', category: 'Education', date: 'Jan 13, 2026', score: 88, prompt: 'Act as an experienced biology teacher...' },
-  { id: '4', goal: 'Generate SEO keywords for a SaaS product', category: 'SEO', date: 'Jan 12, 2026', score: 96, prompt: 'Act as an SEO specialist with 10+ years...' },
-  { id: '5', goal: 'Write a LinkedIn post about AI trends', category: 'Social Media', date: 'Jan 11, 2026', score: 92, prompt: 'Act as a thought leadership content strategist...' },
-];
-
-const mockSavedPrompts = [
-  { id: '1', title: 'Marketing Email - Fitness App', category: 'Marketing', text: 'Act as a senior email copywriter with 10+ years of experience in fitness marketing...', date: 'Jan 15, 2026' },
-  { id: '2', title: 'React Debugging Guide', category: 'Coding', text: 'Act as a senior React developer specializing in performance optimization...', date: 'Jan 14, 2026' },
-  { id: '3', title: 'SEO Keyword Research', category: 'SEO', text: 'Act as an SEO specialist with 10+ years of experience...', date: 'Jan 12, 2026' },
-  { id: '4', title: 'Lesson Plan - Biology', category: 'Education', text: 'Act as an experienced biology teacher with a track record of engaging lessons...', date: 'Jan 10, 2026' },
-];
-
-const mockCollections = [
-  { id: '1', name: 'Marketing Prompts', description: 'All marketing-related prompts', count: 12, date: 'Jan 10, 2026' },
-  { id: '2', name: 'Coding Helpers', description: 'Code generation and debugging', count: 8, date: 'Jan 8, 2026' },
-  { id: '3', name: 'Content Creation', description: 'Blog, social, and email content', count: 5, date: 'Jan 5, 2026' },
-];
-
 const courseModules = [
   { id: '1', title: 'Module 1: Fundamentals', lessons: 5, completed: 3 },
   { id: '2', title: 'Module 2: Role Assignment', lessons: 5, completed: 0 },
@@ -77,6 +57,42 @@ const courseModules = [
   { id: '10', title: 'Module 10: Capstone Project', lessons: 5, completed: 0 },
 ];
 
+function formatDate(value?: string) {
+  if (!value) return 'Today';
+  return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(value));
+}
+
+function promptTextFromGeneration(item: PromptGenerationHistoryItem) {
+  const generated = item.generated_prompt;
+  if (generated && typeof generated === 'object' && 'finalPrompt' in generated && typeof generated.finalPrompt === 'string') {
+    return generated.finalPrompt;
+  }
+  return item.goal || '';
+}
+
+function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  action,
+}: {
+  icon: typeof Sparkles;
+  title: string;
+  description: string;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-dashed border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-gray-900/60">
+      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-900/20">
+        <Icon className="h-6 w-6 text-violet-600" />
+      </div>
+      <h3 className="mb-1 font-heading text-base font-semibold text-gray-900 dark:text-white">{title}</h3>
+      <p className="mx-auto mb-5 max-w-md text-sm text-gray-500 dark:text-gray-400">{description}</p>
+      {action}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  OVERVIEW TAB                                                       */
 /* ------------------------------------------------------------------ */
@@ -84,14 +100,45 @@ const courseModules = [
 function OverviewTab() {
   const { user } = useAuth();
   const { usage, dailyLimit } = useUsage(user?.id, user?.plan_type);
+  const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
+  const [recentGenerations, setRecentGenerations] = useState<PromptGenerationHistoryItem[]>([]);
+  const [coursePurchases, setCoursePurchases] = useState<CoursePurchase[]>([]);
+  const [loading, setLoading] = useState(true);
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
+  useEffect(() => {
+    let active = true;
+    if (!user?.id) {
+      return;
+    }
+
+    Promise.all([
+      getSavedPrompts(user.id),
+      getPromptGenerations(user.id, 5),
+      getCoursePurchases(user.id),
+    ])
+      .then(([saved, generations, purchases]) => {
+        if (!active) return;
+        setSavedPrompts(saved);
+        setRecentGenerations(generations);
+        setCoursePurchases(purchases);
+      })
+      .catch((error) => {
+        if (active) toast.error(error instanceof Error ? error.message : 'Unable to load dashboard data');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => { active = false; };
+  }, [user?.id]);
+
   const stats = [
     { label: 'Prompts Used Today', value: `${usage?.generationsUsed || 0} / ${dailyLimit}`, icon: Zap, color: 'text-violet-600', bg: 'bg-violet-50 dark:bg-violet-900/20' },
-    { label: 'Saved Prompts', value: mockSavedPrompts.length.toString(), icon: Bookmark, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+    { label: 'Saved Prompts', value: loading ? '...' : savedPrompts.length.toString(), icon: Bookmark, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20' },
     { label: 'Current Plan', value: (user?.plan_type || 'Free').charAt(0).toUpperCase() + (user?.plan_type || 'Free').slice(1), icon: Shield, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-    { label: 'Course Progress', value: '3/50', icon: GraduationCap, color: 'text-sky-600', bg: 'bg-sky-50 dark:bg-sky-900/20' },
+    { label: 'Course Access', value: loading ? '...' : coursePurchases.some((p) => p.status === 'active') ? 'Active' : 'Not enrolled', icon: GraduationCap, color: 'text-sky-600', bg: 'bg-sky-50 dark:bg-sky-900/20' },
   ];
 
   return (
@@ -161,7 +208,24 @@ function OverviewTab() {
             View All <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="overflow-x-auto">
+        {loading && (
+          <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">Loading your recent prompt activity...</p>
+        )}
+
+        {!loading && recentGenerations.length === 0 && (
+          <EmptyState
+            icon={Wand2}
+            title="No prompt history yet"
+            description="Generate your first prompt and it will appear here with its category, score, and date."
+            action={(
+              <Link to="/prompt-generator" className="inline-flex min-h-10 items-center justify-center rounded-lg bg-violet-600 px-4 text-sm font-semibold text-white hover:bg-violet-700">
+                Generate a Prompt
+              </Link>
+            )}
+          />
+        )}
+
+        {!loading && recentGenerations.length > 0 && <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 dark:border-gray-800">
@@ -173,19 +237,19 @@ function OverviewTab() {
               </tr>
             </thead>
             <tbody>
-              {mockRecentGenerations.map((row) => (
+              {recentGenerations.map((row) => (
                 <tr key={row.id} className="border-b border-gray-50 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                  <td className="py-3 px-2 text-gray-700 dark:text-gray-300 max-w-[200px] truncate">{row.goal}</td>
-                  <td className="py-3 px-2"><span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full text-gray-600 dark:text-gray-300">{row.category}</span></td>
+                  <td className="py-3 px-2 text-gray-700 dark:text-gray-300 max-w-[200px] truncate">{row.goal || 'Untitled generation'}</td>
+                  <td className="py-3 px-2"><span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full text-gray-600 dark:text-gray-300">{row.category || 'General'}</span></td>
                   <td className="py-3 px-2">
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${row.score >= 90 ? 'bg-emerald-50 text-emerald-600' : row.score >= 80 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600'}`}>
-                      {row.score}
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${(row.prompt_score || 0) >= 90 ? 'bg-emerald-50 text-emerald-600' : (row.prompt_score || 0) >= 80 ? 'bg-amber-50 text-amber-600' : 'bg-gray-100 text-gray-600'}`}>
+                      {row.prompt_score || '-'}
                     </span>
                   </td>
-                  <td className="py-3 px-2 text-gray-500 dark:text-gray-400">{row.date}</td>
+                  <td className="py-3 px-2 text-gray-500 dark:text-gray-400">{formatDate(row.created_at)}</td>
                   <td className="py-3 px-2">
                     <button
-                      onClick={() => { navigator.clipboard.writeText(row.prompt); toast.success('Copied to clipboard'); }}
+                      onClick={() => { navigator.clipboard.writeText(promptTextFromGeneration(row)); toast.success('Copied to clipboard'); }}
                       className="text-xs text-violet-600 hover:underline flex items-center gap-1"
                     >
                       <Copy className="w-3 h-3" /> Copy
@@ -195,7 +259,7 @@ function OverviewTab() {
               ))}
             </tbody>
           </table>
-        </div>
+        </div>}
       </motion.div>
 
       {/* Quick Actions */}
@@ -241,12 +305,56 @@ function OverviewTab() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  GENERATE TAB                                                       */
+/* ------------------------------------------------------------------ */
+
+function GenerateTab() {
+  return (
+    <div>
+      <h1 className="font-heading font-bold text-2xl text-gray-900 dark:text-white mb-6">Generate</h1>
+      <EmptyState
+        icon={Wand2}
+        title="Open the prompt generator"
+        description="The generator is a dedicated workspace. Your generated prompts will return to this dashboard history."
+        action={(
+          <Link to="/prompt-generator" className="inline-flex min-h-10 items-center justify-center rounded-lg bg-violet-600 px-4 text-sm font-semibold text-white hover:bg-violet-700">
+            Launch Generator
+          </Link>
+        )}
+      />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  SAVED PROMPTS TAB                                                  */
 /* ------------------------------------------------------------------ */
 
 function SavedPromptsTab() {
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
-  const [prompts, setPrompts] = useState(mockSavedPrompts);
+  const [prompts, setPrompts] = useState<SavedPrompt[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    if (!user?.id) {
+      return;
+    }
+
+    getSavedPrompts(user.id)
+      .then((items) => {
+        if (active) setPrompts(items);
+      })
+      .catch((error) => {
+        if (active) toast.error(error instanceof Error ? error.message : 'Unable to load saved prompts');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => { active = false; };
+  }, [user?.id]);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return prompts;
@@ -256,9 +364,15 @@ function SavedPromptsTab() {
     );
   }, [search, prompts]);
 
-  const handleDelete = (id: string) => {
-    setPrompts(prev => prev.filter(p => p.id !== id));
-    toast.success('Prompt deleted');
+  const handleDelete = async (id: string) => {
+    if (!user?.id) return;
+    try {
+      await deleteSavedPrompt(user.id, id);
+      setPrompts(prev => prev.filter(p => p.id !== id));
+      toast.success('Prompt deleted');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to delete prompt');
+    }
   };
 
   const handleCopy = (text: string) => {
@@ -284,7 +398,9 @@ function SavedPromptsTab() {
       </div>
 
       <div className="space-y-4">
-        {filtered.map((prompt, i) => (
+        {loading && <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">Loading saved prompts...</p>}
+
+        {!loading && filtered.map((prompt, i) => (
           <motion.div
             key={prompt.id}
             variants={fadeUp}
@@ -302,7 +418,7 @@ function SavedPromptsTab() {
               </div>
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => handleCopy(prompt.text)}
+                  onClick={() => handleCopy(prompt.prompt_text)}
                   className="p-2 rounded-lg text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                   title="Copy"
                 >
@@ -317,12 +433,12 @@ function SavedPromptsTab() {
                 </button>
               </div>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 font-mono line-clamp-2">{prompt.text}</p>
-            <p className="text-xs text-gray-400 mt-3">Saved {prompt.date}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-mono line-clamp-2">{prompt.prompt_text}</p>
+            <p className="text-xs text-gray-400 mt-3">Saved {formatDate(prompt.created_at)}</p>
           </motion.div>
         ))}
 
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-800">
             <Bookmark className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-500 dark:text-gray-400 text-sm">No saved prompts found.</p>
@@ -341,7 +457,29 @@ function SavedPromptsTab() {
 /* ------------------------------------------------------------------ */
 
 function HistoryTab() {
-  const [history] = useState(mockRecentGenerations);
+  const { user } = useAuth();
+  const [history, setHistory] = useState<PromptGenerationHistoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    if (!user?.id) {
+      return;
+    }
+
+    getPromptGenerations(user.id, 50)
+      .then((items) => {
+        if (active) setHistory(items);
+      })
+      .catch((error) => {
+        if (active) toast.error(error instanceof Error ? error.message : 'Unable to load generation history');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => { active = false; };
+  }, [user?.id]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -353,6 +491,22 @@ function HistoryTab() {
       <h1 className="font-heading font-bold text-2xl text-gray-900 dark:text-white mb-6">Generation History</h1>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        {loading && <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">Loading generation history...</p>}
+        {!loading && history.length === 0 && (
+          <div className="p-6">
+            <EmptyState
+              icon={History}
+              title="No generation history yet"
+              description="Your generated prompts will appear here after you use the prompt generator."
+              action={(
+                <Link to="/prompt-generator" className="inline-flex min-h-10 items-center justify-center rounded-lg bg-violet-600 px-4 text-sm font-semibold text-white hover:bg-violet-700">
+                  Generate a Prompt
+                </Link>
+              )}
+            />
+          </div>
+        )}
+        {!loading && history.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -374,18 +528,18 @@ function HistoryTab() {
                   custom={i}
                   className="border-b border-gray-50 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                 >
-                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300 max-w-[240px] truncate">{row.goal}</td>
-                  <td className="py-3 px-4"><span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full text-gray-600 dark:text-gray-300">{row.category}</span></td>
+                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300 max-w-[240px] truncate">{row.goal || 'Untitled generation'}</td>
+                  <td className="py-3 px-4"><span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full text-gray-600 dark:text-gray-300">{row.category || 'General'}</span></td>
                   <td className="py-3 px-4">
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${row.score >= 90 ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {row.score}
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${(row.prompt_score || 0) >= 90 ? 'bg-emerald-50 text-emerald-600' : (row.prompt_score || 0) >= 80 ? 'bg-amber-50 text-amber-600' : 'bg-gray-100 text-gray-600'}`}>
+                      {row.prompt_score || '-'}
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-gray-500 dark:text-gray-400">{row.date}</td>
+                  <td className="py-3 px-4 text-gray-500 dark:text-gray-400">{formatDate(row.created_at)}</td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => handleCopy(row.prompt)}
+                        onClick={() => handleCopy(promptTextFromGeneration(row))}
                         className="p-1.5 rounded text-gray-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                         title="Copy"
                       >
@@ -405,6 +559,7 @@ function HistoryTab() {
             </tbody>
           </table>
         </div>
+        )}
       </div>
     </div>
   );
@@ -415,25 +570,53 @@ function HistoryTab() {
 /* ------------------------------------------------------------------ */
 
 function CollectionsTab() {
-  const [collections, setCollections] = useState(mockCollections);
+  const { user } = useAuth();
+  const [collections, setCollections] = useState<PromptCollection[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDesc, setNewDesc] = useState('');
 
-  const handleCreate = () => {
+  useEffect(() => {
+    let active = true;
+    if (!user?.id) {
+      return;
+    }
+
+    getPromptCollections(user.id)
+      .then((items) => {
+        if (active) setCollections(items);
+      })
+      .catch((error) => {
+        if (active) toast.error(error instanceof Error ? error.message : 'Unable to load collections');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => { active = false; };
+  }, [user?.id]);
+
+  const handleCreate = async () => {
     if (!newName.trim()) return;
-    const newCollection = {
-      id: Date.now().toString(),
-      name: newName.trim(),
-      description: newDesc.trim(),
-      count: 0,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-    };
-    setCollections(prev => [...prev, newCollection]);
-    setNewName('');
-    setNewDesc('');
-    setShowCreate(false);
-    toast.success('Collection created');
+    if (!user?.id) {
+      toast.error('Please log in to create collections');
+      return;
+    }
+
+    try {
+      const newCollection = await createPromptCollection(user.id, {
+        name: newName.trim(),
+        description: newDesc.trim() || undefined,
+      });
+      setCollections(prev => [newCollection, ...prev]);
+      setNewName('');
+      setNewDesc('');
+      setShowCreate(false);
+      toast.success('Collection created');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to create collection');
+    }
   };
 
   return (
@@ -488,7 +671,20 @@ function CollectionsTab() {
         </motion.div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {loading && <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">Loading collections...</p>}
+      {!loading && collections.length === 0 && (
+        <EmptyState
+          icon={FolderOpen}
+          title="No collections yet"
+          description="Create collections to organize prompts by client, workflow, campaign, or topic."
+          action={(
+            <button onClick={() => setShowCreate(true)} className="inline-flex min-h-10 items-center justify-center rounded-lg bg-violet-600 px-4 text-sm font-semibold text-white hover:bg-violet-700">
+              New Collection
+            </button>
+          )}
+        />
+      )}
+      {!loading && collections.length > 0 && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {collections.map((col, i) => (
           <motion.div
             key={col.id}
@@ -502,14 +698,14 @@ function CollectionsTab() {
               <div className="w-10 h-10 bg-violet-50 dark:bg-violet-900/20 rounded-lg flex items-center justify-center">
                 <FolderOpen className="w-5 h-5 text-violet-600" />
               </div>
-              <span className="text-xs text-gray-400">{col.count} prompts</span>
+              <span className="text-xs text-gray-400">Collection</span>
             </div>
             <h3 className="font-heading font-semibold text-gray-900 dark:text-white mb-1">{col.name}</h3>
             {col.description && <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{col.description}</p>}
-            <p className="text-xs text-gray-400">Created {col.date}</p>
+            <p className="text-xs text-gray-400">Created {formatDate(col.created_at)}</p>
           </motion.div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 }
@@ -519,10 +715,42 @@ function CollectionsTab() {
 /* ------------------------------------------------------------------ */
 
 function CourseTab() {
-  const hasPurchased = false; // Mock
+  const { user } = useAuth();
+  const [purchases, setPurchases] = useState<CoursePurchase[]>([]);
+  const [loading, setLoading] = useState(true);
   const totalLessons = courseModules.reduce((acc, m) => acc + m.lessons, 0);
   const completedLessons = courseModules.reduce((acc, m) => acc + m.completed, 0);
   const progressPercent = Math.round((completedLessons / totalLessons) * 100);
+  const hasPurchased = purchases.some((purchase) => purchase.status === 'active');
+
+  useEffect(() => {
+    let active = true;
+    if (!user?.id) {
+      return;
+    }
+
+    getCoursePurchases(user.id)
+      .then((items) => {
+        if (active) setPurchases(items);
+      })
+      .catch((error) => {
+        if (active) toast.error(error instanceof Error ? error.message : 'Unable to load course access');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => { active = false; };
+  }, [user?.id]);
+
+  if (loading) {
+    return (
+      <div>
+        <h1 className="font-heading font-bold text-2xl text-gray-900 dark:text-white mb-6">Course</h1>
+        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">Loading course access...</p>
+      </div>
+    );
+  }
 
   if (!hasPurchased) {
     return (
@@ -709,7 +937,7 @@ function BillingTab() {
 /* ------------------------------------------------------------------ */
 
 function SettingsTab() {
-  const { user } = useAuth();
+  const { user, refresh } = useAuth();
   const [name, setName] = useState(user?.full_name || '');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -717,10 +945,17 @@ function SettingsTab() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleSaveProfile = async () => {
+    if (!user?.id) return;
     setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    toast.success('Profile updated');
-    setSaving(false);
+    try {
+      await updateProfile(user.id, { full_name: name.trim() || user.full_name });
+      await refresh();
+      toast.success('Profile updated');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to update profile');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleChangePassword = async () => {
@@ -844,7 +1079,7 @@ function SettingsTab() {
               <p className="text-sm text-red-600 dark:text-red-400 font-medium">Are you sure? This cannot be undone.</p>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => { toast.success('Account deleted (demo)'); setShowDeleteConfirm(false); }}
+                  onClick={() => { toast.error('Account deletion is not enabled yet. Contact support to delete your account.'); setShowDeleteConfirm(false); }}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors"
                 >
                   Yes, Delete
@@ -870,10 +1105,12 @@ function SettingsTab() {
 
 export default function Dashboard() {
   const [searchParams] = useSearchParams();
+  const { user, loading } = useAuth();
   const tab = searchParams.get('tab') || 'overview';
 
   const renderTab = () => {
     switch (tab) {
+      case 'generate': return <GenerateTab />;
       case 'saved': return <SavedPromptsTab />;
       case 'history': return <HistoryTab />;
       case 'collections': return <CollectionsTab />;
@@ -884,12 +1121,26 @@ export default function Dashboard() {
     }
   };
 
+  if (loading) {
+    return (
+      <>
+        <DashboardLayout>
+          <p className="py-20 text-center text-sm text-gray-500 dark:text-gray-400">Loading your dashboard...</p>
+        </DashboardLayout>
+        <Toaster position="top-right" richColors />
+      </>
+    );
+  }
+
+  if (!user) return <Navigate to="/login" replace />;
+
   return (
     <>
       <SEOHead title={`${tab.charAt(0).toUpperCase() + tab.slice(1)} — Dashboard — Verbito.ai`} />
       <DashboardLayout>
         {renderTab()}
       </DashboardLayout>
+      <Toaster position="top-right" richColors />
     </>
   );
 }

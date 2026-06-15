@@ -90,6 +90,7 @@ export default function App() {
   return (
     <Suspense fallback={<RouteLoader />}>
       <Routes>
+        <Route path="dashboard" element={<Dashboard />} />
         <Route element={<PageLayout />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
@@ -101,7 +102,6 @@ export default function App() {
           <Route path="consulting" element={<Consulting />} />
           <Route path="contact" element={<Contact />} />
           <Route path="cookies" element={<Cookies />} />
-          <Route path="dashboard" element={<Dashboard />} />
           <Route path="disclaimer" element={<Disclaimer />} />
           <Route path="enterprise" element={<Enterprise />} />
           <Route path="forgot-password" element={<ForgotPassword />} />

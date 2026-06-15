@@ -3,7 +3,7 @@
 /*  Swap mock data for real Supabase calls when backend is live     */
 /* ================================================================ */
 
-import type { BlogPost,CoursePurchase,DailyUsage,Lead,PromptTemplate,SavedPrompt,Subscription,UserProfile } from '@/types';
+import type { BlogPost,CoursePurchase,DailyUsage,Lead,PromptCollection,PromptGenerationHistoryItem,PromptTemplate,SavedPrompt,Subscription,UserProfile } from '@/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
@@ -64,8 +64,22 @@ export async function getCurrentUser() {
   const client = requireSupabaseClient();
   const { data: { user } } = await client.auth.getUser();
   if (!user) return null;
-  const { data: profile } = await client.from('profiles').select('*').eq('id', user.id).single();
-  return profile as UserProfile | null;
+  const { data: profile } = await client.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  if (profile) return profile as UserProfile;
+
+  const fallbackProfile: UserProfile = {
+    id: user.id,
+    email: user.email || '',
+    full_name: (user.user_metadata?.full_name as string | undefined) || user.email?.split('@')[0] || 'User',
+    avatar_url: user.user_metadata?.avatar_url as string | undefined,
+    plan_type: 'free',
+    role: 'user',
+    created_at: user.created_at,
+    updated_at: new Date().toISOString(),
+  };
+
+  await client.from('profiles').upsert(fallbackProfile, { onConflict: 'id' });
+  return fallbackProfile;
 }
 
 export async function resetPassword(email: string) {
@@ -140,6 +154,52 @@ export async function getSavedPrompts(userId: string): Promise<SavedPrompt[]> {
   const { data, error } = await client.from('saved_prompts').select('*').eq('user_id', userId).order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
+}
+
+export async function getPromptGenerations(userId: string, limit = 10): Promise<PromptGenerationHistoryItem[]> {
+  if (!supabase && canUseLocalMocks()) return [];
+  const client = requireSupabaseClient();
+  const { data, error } = await client
+    .from('prompt_generations')
+    .select('id,user_id,anonymous_id,category,goal,target_model,output_type,generated_prompt,prompt_score,created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getPromptCollections(userId: string): Promise<PromptCollection[]> {
+  if (!supabase && canUseLocalMocks()) return [];
+  const client = requireSupabaseClient();
+  const { data, error } = await client
+    .from('prompt_collections')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createPromptCollection(userId: string, collection: Pick<PromptCollection, 'name' | 'description'>): Promise<PromptCollection> {
+  if (!supabase && canUseLocalMocks()) {
+    return {
+      id: crypto.randomUUID(),
+      user_id: userId,
+      name: collection.name,
+      description: collection.description,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+  }
+  const client = requireSupabaseClient();
+  const { data, error } = await client
+    .from('prompt_collections')
+    .insert({ ...collection, user_id: userId })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
 export async function savePrompt(userId: string, prompt: Omit<SavedPrompt, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<SavedPrompt> {

@@ -20,7 +20,7 @@ import { Link,useLocation } from 'react-router-dom';
 
 const navItems = [
   { label: 'Overview', href: '/dashboard', icon: LayoutDashboard, tab: 'overview' },
-  { label: 'Generate', href: '/prompt-generator', icon: Wand2, tab: 'generate' },
+  { label: 'Generate', href: '/dashboard?tab=generate', icon: Wand2, tab: 'generate' },
   { label: 'Saved Prompts', href: '/dashboard?tab=saved', icon: Bookmark, tab: 'saved' },
   { label: 'History', href: '/dashboard?tab=history', icon: History, tab: 'history' },
   { label: 'Collections', href: '/dashboard?tab=collections', icon: FolderOpen, tab: 'collections' },
@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const planLabel = user?.plan_type ? user.plan_type.charAt(0).toUpperCase() + user.plan_type.slice(1) : 'Free';
 
   return (
-    <div className="min-h-[100dvh] bg-gray-50 dark:bg-gray-950 pt-16">
+    <div className="min-h-[100dvh] bg-gray-50 dark:bg-gray-950">
       {/* Mobile Overlay */}
       <AnimatePresence>
         {mobileOpen && (
@@ -65,14 +65,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Hamburger */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-20 left-4 z-40 lg:hidden p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm"
+        className="fixed top-4 left-4 z-40 lg:hidden p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm"
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-16 h-[calc(100dvh-4rem)] bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 z-30 flex flex-col ${
+        className={`fixed left-0 top-0 h-[100dvh] bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 z-30 flex flex-col ${
           collapsed ? 'w-16' : 'w-[280px]'
         } ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
@@ -158,7 +158,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Main Content */}
-      <main className={`transition-all duration-300 ${collapsed ? 'lg:ml-16' : 'lg:ml-[280px]'} min-h-[calc(100dvh-4rem)]`}>
+      <main className={`transition-all duration-300 ${collapsed ? 'lg:ml-16' : 'lg:ml-[280px]'} min-h-[100dvh]`}>
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

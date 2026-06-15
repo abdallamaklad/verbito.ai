@@ -126,6 +126,19 @@ export interface PromptCollection {
   updated_at: string;
 }
 
+export interface PromptGenerationHistoryItem {
+  id: string;
+  user_id?: string;
+  anonymous_id?: string;
+  category?: string;
+  goal?: string;
+  target_model?: string;
+  output_type?: string;
+  generated_prompt?: PromptGenerationResult | Record<string, unknown>;
+  prompt_score?: number;
+  created_at: string;
+}
+
 export interface PromptTemplate {
   id: string;
   slug: string;
