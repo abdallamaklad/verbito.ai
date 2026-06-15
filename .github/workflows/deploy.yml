@@ -12,6 +12,8 @@ concurrency:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  VPS_HOST: 76.13.190.19
+  VPS_USER: root
 
 jobs:
   deploy:
@@ -49,16 +51,17 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           install -m 600 /dev/null ~/.ssh/id_ed25519
+          test -n "${{ secrets.VPS_SSH_KEY }}" || (echo "Missing GitHub secret: VPS_SSH_KEY" >&2; exit 1)
           printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
-          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
       - name: Upload build and deploy script
         run: |
-          scp verbito-dist.tar.gz "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/verbito-dist.tar.gz"
-          scp scripts/deploy/deploy-vps.sh "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/deploy-verbito.sh"
+          scp verbito-dist.tar.gz "$VPS_USER@$VPS_HOST:/tmp/verbito-dist.tar.gz"
+          scp scripts/deploy/deploy-vps.sh "$VPS_USER@$VPS_HOST:/tmp/deploy-verbito.sh"
 
       - name: Deploy on VPS
-        run: ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "bash /tmp/deploy-verbito.sh /tmp/verbito-dist.tar.gz"
+        run: ssh "$VPS_USER@$VPS_HOST" "bash /tmp/deploy-verbito.sh /tmp/verbito-dist.tar.gz"
 
       - name: Smoke test
         run: |
