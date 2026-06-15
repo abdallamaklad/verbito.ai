@@ -3,8 +3,8 @@ import { Check,ChevronDown,ChevronUp,Sparkles,Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import SEOHead from '../components/shared/SEOHead';
-import { useAuth } from '../hooks/useAuth';
 import { createCheckoutSession } from '../services/stripe';
+import { supabase } from '../services/supabase';
 import type { BillingPeriod,PlanType } from '../types';
 
 const plans = [
@@ -94,7 +94,6 @@ function SimpleFaqItem({ q, a }: { q: string; a: string }) {
 
 export default function Pricing() {
   const navigate = useNavigate();
-  const { isLoggedIn, loading: authLoading } = useAuth();
   const [isAnnual, setIsAnnual] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -109,12 +108,8 @@ export default function Pricing() {
     if (planId === 'free') return;
 
     const billingPeriod: BillingPeriod = isAnnual ? 'yearly' : 'monthly';
-    if (authLoading) {
-      setCheckoutError('Checking your account. Please try again in a moment.');
-      return;
-    }
-
-    if (!isLoggedIn) {
+    const { data: sessionData } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+    if (!sessionData.session) {
       navigate(`/signup?plan=${planId}&billing=${billingPeriod}`);
       return;
     }
