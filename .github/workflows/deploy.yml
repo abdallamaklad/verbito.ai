@@ -39,10 +39,10 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL }}
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL || vars.VITE_SITE_URL || 'https://verbito.ai' }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || vars.VITE_SUPABASE_URL || 'https://doqpjnbgwycfgawpjomf.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || vars.VITE_SUPABASE_ANON_KEY || 'sb_publishable_5-4ua-16JitaKNARknLJUA_LjFAqy_b' }}
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY || vars.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_live_51TcntE2cUp9MmGxDgFZthJSC5Wqyzzj2mpRMcX4T8Grh63znIM6g9dytHKVoNZzMrzZ3FnCQXh1QPx2blLy0W96f00tNhZCHPF' }}
 
       - name: Package static build
         run: tar -C dist -czf verbito-dist.tar.gz .
