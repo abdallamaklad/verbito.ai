@@ -43,9 +43,14 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      await signUp(email, password, name);
-      toast.success(tt.accountCreated);
-      navigate('/dashboard');
+      const data = await signUp(email, password, name);
+      if (data.session) {
+        toast.success(tt.accountCreated);
+        navigate('/dashboard');
+        return;
+      }
+      toast.success('Account created. Please check your email to confirm your address.');
+      navigate('/login');
     } catch (err: unknown) {
       const message = getErrorMessage(err, tt.failedCreate);
       setErrors({ general: message });

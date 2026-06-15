@@ -8,6 +8,8 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const siteUrl = (import.meta.env.VITE_SITE_URL || 'https://verbito.ai').replace(/\/$/, '');
+const authRedirectUrl = `${siteUrl}/dashboard`;
 
 export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
@@ -29,7 +31,14 @@ function requireSupabaseClient() {
 export async function signUp(email: string, password: string, fullName: string) {
   if (!supabase && canUseLocalMocks()) return mockSignUp(email, fullName);
   const client = requireSupabaseClient();
-  const { data, error } = await client.auth.signUp({ email, password, options: { data: { full_name: fullName } } });
+  const { data, error } = await client.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: fullName },
+      emailRedirectTo: authRedirectUrl,
+    },
+  });
   if (error) throw error;
   return data;
 }
@@ -44,7 +53,12 @@ export async function signIn(email: string, password: string) {
 
 export async function signInWithOAuth(provider: 'google' | 'github') {
   if (!supabase) throw new Error('Supabase not configured');
-  const { data, error } = await supabase.auth.signInWithOAuth({ provider });
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: authRedirectUrl,
+    },
+  });
   if (error) throw error;
   return data;
 }
