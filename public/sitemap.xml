@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://verbito.ai/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://verbito.ai/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://verbito.ai/consulting</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://verbito.ai/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://verbito.ai/enterprise</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://verbito.ai/pricing</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://verbito.ai/course/master-prompt-engineering</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://verbito.ai/knowledge</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/prompts</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/prompt-generator</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://verbito.ai/tools/free-ai-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://verbito.ai/tools/business-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/chatgpt-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/coding-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/email-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/image-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/marketing-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/midjourney-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/prompt-doctor</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/research-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/seo-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/student-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/tools/video-prompt-generator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://verbito.ai/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://verbito.ai/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://verbito.ai/refund-policy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://verbito.ai/cookies</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://verbito.ai/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://verbito.ai/affiliate-disclosure</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>
