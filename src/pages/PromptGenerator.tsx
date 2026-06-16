@@ -189,6 +189,13 @@ const qualityLabels: Record<keyof QualityBreakdown, string> = {
   reusability: 'Reusability',
 };
 
+function getGenerationErrorMessage(error: unknown): string {
+  const fallback = 'Prompt generation failed. Please try again in a moment.';
+  if (!(error instanceof Error) || !error.message) return fallback;
+  if (error.message.includes('non-2xx')) return fallback;
+  return error.message;
+}
+
 /* ------------------------------------------------------------------ */
 /*  MAIN COMPONENT                                                     */
 /* ------------------------------------------------------------------ */
@@ -221,6 +228,7 @@ export default function PromptGenerator() {
   /* Result State */
   const [generating, setGenerating] = useState(false);
   const [result, setResult] = useState<PromptGenerationResult | null>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('optimized');
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -231,7 +239,7 @@ export default function PromptGenerator() {
 
   /* Hooks */
   const { user, isLoggedIn } = useAuth();
-  const { usage, dailyLimit, hasReachedLimit, useGeneration: consumeGeneration } = useUsage(user?.id, user?.plan_type || 'free');
+  const { usage, dailyLimit, hasReachedLimit, refresh: refreshUsage } = useUsage(user?.id, user?.plan_type || 'free');
 
   /* Refs for scroll */
   const outputRef = useRef<HTMLDivElement>(null);
@@ -239,6 +247,7 @@ export default function PromptGenerator() {
   /* ── Preset handler ── */
   const handlePreset = (preset: typeof presets[0]) => {
     setGoal(preset.goal);
+    setGenerationError(null);
     setCategory(preset.category);
     setTone(preset.tone);
     setOutputType(preset.outputType);
@@ -249,8 +258,8 @@ export default function PromptGenerator() {
   const handleGenerate = async () => {
     if (!goal.trim()) return;
 
-    const { allowed } = await consumeGeneration();
-    if (!allowed) {
+    setGenerationError(null);
+    if (hasReachedLimit) {
       setShowUpgrade(true);
       return;
     }
@@ -283,12 +292,14 @@ export default function PromptGenerator() {
       const res = await generatePrompt(input);
       setResult(res);
       setActivePrompt(res.finalPrompt);
+      void refreshUsage();
 
       setTimeout(() => {
         outputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     } catch (err) {
       console.error('Generation failed:', err);
+      setGenerationError(getGenerationErrorMessage(err));
     } finally {
       setGenerating(false);
     }
@@ -428,7 +439,10 @@ export default function PromptGenerator() {
                   </label>
                   <textarea
                     value={goal}
-                    onChange={(e) => setGoal(e.target.value)}
+                    onChange={(e) => {
+                      setGoal(e.target.value);
+                      if (generationError) setGenerationError(null);
+                    }}
                     placeholder={gt.goalPlaceholder}
                     className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 resize-none dark:text-gray-200 dark:placeholder-gray-500 transition-all"
                     rows={4}
@@ -724,6 +738,12 @@ export default function PromptGenerator() {
                       exit={{ opacity: 0 }}
                       className="flex-1 flex flex-col items-center justify-center text-center py-16"
                     >
+                      {generationError && (
+                        <div className="mb-6 w-full rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-left text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
+                          <p className="font-semibold">Generation failed</p>
+                          <p className="mt-1">{generationError}</p>
+                        </div>
+                      )}
                       <div className="w-20 h-20 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/20 dark:to-indigo-900/20 rounded-2xl flex items-center justify-center mb-5">
                         <Sparkles className="w-10 h-10 text-violet-400" />
                       </div>
