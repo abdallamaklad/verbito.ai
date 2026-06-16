@@ -90,8 +90,6 @@ export default function App() {
   return (
     <Suspense fallback={<RouteLoader />}>
       <Routes>
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route element={<PageLayout />}>
           <Route index element={<Home />} />
@@ -109,6 +107,7 @@ export default function App() {
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="knowledge" element={<Knowledge />} />
           <Route path="knowledge/:slug" element={<Article />} />
+          <Route path="login" element={<Login />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="privacy" element={<Privacy />} />
           <Route path="prompt-generator" element={<PromptGenerator />} />
@@ -118,6 +117,7 @@ export default function App() {
           <Route path="refund" element={<Navigate to="/refund-policy" replace />} />
           <Route path="refund-policy" element={<RefundPolicy />} />
           <Route path="saved-prompts" element={<SavedPrompts />} />
+          <Route path="signup" element={<Signup />} />
           <Route path="terms" element={<Terms />} />
 
           <Route path="course" element={<Navigate to="/course/master-prompt-engineering" replace />} />

@@ -5,7 +5,6 @@ import { Eye,EyeOff,Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Toaster } from '@/components/ui/sonner';
 import { signInWithOAuth,signUp } from '../services/supabase';
 
 function getErrorMessage(error: unknown, fallback: string) {
@@ -90,8 +89,7 @@ export default function Signup() {
   };
 
   return (
-    <>
-    <div className="min-h-[100dvh] flex">
+    <div className="min-h-[100dvh] flex pt-16">
       {/* Left - Decorative */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-violet-600 to-indigo-700 items-center justify-center relative overflow-hidden">
         <div className="relative z-10 text-white text-center px-12">
@@ -243,7 +241,5 @@ export default function Signup() {
         </motion.div>
       </div>
     </div>
-    <Toaster position="top-right" richColors />
-    </>
   );
 }

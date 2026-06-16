@@ -29,6 +29,7 @@ export default function Navbar() {
   const location = useLocation();
   const { isLoggedIn, loading, logout } = useAuth();
   const nt = usePageTranslations(navTranslations);
+  const forceSolid = location.pathname === '/login' || location.pathname === '/signup';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -42,7 +43,7 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-400 ${
-          scrolled
+          scrolled || forceSolid
             ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 shadow-sm'
             : 'bg-transparent'
         }`}
