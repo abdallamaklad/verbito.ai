@@ -34,6 +34,7 @@ export default function Signup() {
     mustAgree: tt.mustAgree || 'Please agree to the terms and privacy policy',
     accountCreated: tt.accountCreated || 'Account created',
     failedCreate: tt.failedCreate || 'Could not create your account',
+    checkEmailConfirm: tt.checkEmailConfirm || 'Account created. Please check your email to confirm your address.',
   };
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
@@ -70,7 +71,7 @@ export default function Signup() {
         navigate('/dashboard');
         return;
       }
-      toast.success('Account created. Please check your email to confirm your address.');
+      toast.success(copy.checkEmailConfirm);
       navigate('/login');
     } catch (err: unknown) {
       const message = getErrorMessage(err, copy.failedCreate);
