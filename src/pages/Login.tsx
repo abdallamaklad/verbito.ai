@@ -1,5 +1,6 @@
 import { usePageTranslations } from '@/hooks/useTranslation';
 import { auth as aut } from '@/lib/translations/auth';
+import { Toaster } from '@/components/ui/sonner';
 import { motion } from 'framer-motion';
 import { Eye,EyeOff,Github,Sparkles } from 'lucide-react';
 import { useState } from 'react';
@@ -64,6 +65,7 @@ export default function Login() {
   };
 
   return (
+    <>
     <div className="min-h-[100dvh] flex">
       {/* Left - Decorative */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-violet-600 to-indigo-700 items-center justify-center relative overflow-hidden">
@@ -185,5 +187,7 @@ export default function Login() {
         </motion.div>
       </div>
     </div>
+    <Toaster position="top-right" richColors />
+    </>
   );
 }
