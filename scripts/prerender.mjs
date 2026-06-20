@@ -84,7 +84,14 @@ const renderPage = (entry) => {
     '@context': 'https://schema.org',
     '@type': schemaType,
     name: entry.heading,
-    ...(schemaType === 'Article' ? { headline: entry.heading, image } : {}),
+    ...(schemaType === 'Article' ? {
+      headline: entry.heading,
+      image,
+      author: { '@type': 'Organization', name: 'Quantara LLC', url: siteUrl },
+    } : {}),
+    ...(schemaType === 'Course' ? {
+      provider: { '@type': 'Organization', name: 'Quantara LLC', url: siteUrl },
+    } : {}),
     description: entry.description,
     url: canonical,
     publisher: {
@@ -107,8 +114,10 @@ const renderPage = (entry) => {
   html = setMeta(html, 'name', 'robots', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
   html = setMeta(html, 'property', 'og:title', entry.title);
   html = setMeta(html, 'property', 'og:description', entry.description);
+  html = setMeta(html, 'property', 'og:type', schemaType === 'Article' ? 'article' : 'website');
   html = setMeta(html, 'property', 'og:url', canonical);
   html = setMeta(html, 'property', 'og:image', image);
+  html = setMeta(html, 'property', 'og:image:alt', entry.heading);
   html = setMeta(html, 'name', 'twitter:title', entry.title);
   html = setMeta(html, 'name', 'twitter:description', entry.description);
   html = setMeta(html, 'name', 'twitter:url', canonical);
