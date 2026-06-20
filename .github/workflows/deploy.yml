@@ -56,10 +56,10 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
           test -n "${{ secrets.VPS_SSH_KEY }}" || (echo "Missing GitHub secret: VPS_SSH_KEY" >&2; exit 1)
           printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ssh-keyscan -T 10 -H "$VPS_HOST" >> ~/.ssh/known_hosts && break
             echo "ssh-keyscan failed on attempt $attempt" >&2
-            sleep 3
+            sleep $((attempt * 3))
           done
           if [ ! -s ~/.ssh/known_hosts ]; then
             echo "ssh-keyscan did not return a host key; falling back to SSH accept-new on first connection." >&2
@@ -67,12 +67,12 @@ jobs:
 
       - name: Upload build and deploy script
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             if scp $SSH_OPTIONS verbito-dist.tar.gz "$VPS_USER@$VPS_HOST:/tmp/verbito-dist.tar.gz" && \
                scp $SSH_OPTIONS scripts/deploy/deploy-vps.sh "$VPS_USER@$VPS_HOST:/tmp/deploy-verbito.sh"; then
               break
             fi
-            if [ "$attempt" -eq 3 ]; then
+            if [ "$attempt" -eq 5 ]; then
               echo "VPS upload failed after $attempt attempts" >&2
               exit 1
             fi
@@ -82,11 +82,11 @@ jobs:
 
       - name: Deploy on VPS
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             if ssh $SSH_OPTIONS "$VPS_USER@$VPS_HOST" "bash /tmp/deploy-verbito.sh /tmp/verbito-dist.tar.gz"; then
               break
             fi
-            if [ "$attempt" -eq 3 ]; then
+            if [ "$attempt" -eq 5 ]; then
               echo "VPS deploy failed after $attempt attempts" >&2
               exit 1
             fi
