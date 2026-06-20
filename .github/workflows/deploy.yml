@@ -8,13 +8,13 @@ on:
 
 concurrency:
   group: deploy-verbito
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   VPS_HOST: 76.13.190.19
   VPS_USER: root
-  SSH_OPTIONS: -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=3
+  SSH_OPTIONS: -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=3
 
 jobs:
   deploy:
