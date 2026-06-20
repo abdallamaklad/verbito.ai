@@ -245,7 +245,6 @@ export default function Home() {
           description: 'AI prompt generator that turns rough ideas into expert-level prompts',
           applicationCategory: 'ProductivityApplication',
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-          aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', ratingCount: '2000' },
         }}
       />
 
