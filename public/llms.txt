@@ -1,0 +1,19 @@
+# Verbito.ai
+
+Verbito.ai is an AI prompt generation and prompt-engineering education platform operated by Quantara LLC in the UAE.
+
+## Primary pages
+
+- [AI Prompt Generator](https://verbito.ai/prompt-generator)
+- [Prompt Library](https://verbito.ai/prompts)
+- [Prompt Engineering Knowledge Hub](https://verbito.ai/knowledge)
+- [Master Prompt Engineering Course](https://verbito.ai/course/master-prompt-engineering)
+- [Pricing](https://verbito.ai/pricing)
+
+## Company and policies
+
+- [About Verbito](https://verbito.ai/about)
+- [Contact](https://verbito.ai/contact)
+- [Privacy Policy](https://verbito.ai/privacy)
+- [Terms of Service](https://verbito.ai/terms)
+- [Sitemap](https://verbito.ai/sitemap.xml)

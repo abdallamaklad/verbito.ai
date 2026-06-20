@@ -46,6 +46,12 @@ verbito.ai, www.verbito.ai {
 \t\tfile_server
 \t}
 
+\t@staticAssets path *.jpg *.jpeg *.png *.webp *.svg *.ico *.woff *.woff2
+\thandle @staticAssets {
+\t\theader Cache-Control "public, max-age=604800"
+\t\tfile_server
+\t}
+
 \thandle {
 \t\theader Cache-Control "no-cache"
 \t\ttry_files {path} /index.html

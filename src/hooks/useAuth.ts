@@ -1,6 +1,7 @@
-import { getCurrentUser,signOut as supabaseSignOut,supabase } from '@/services/supabase';
 import type { UserProfile } from '@/types';
 import { useCallback,useEffect,useState } from 'react';
+
+type SupabaseService = typeof import('@/services/supabase');
 
 type AuthState = {
   user: UserProfile | null;
@@ -11,15 +12,22 @@ type AuthState = {
 let authState: AuthState = { user: null, loading: true, error: null };
 let initialized = false;
 let authSubscription: { unsubscribe: () => void } | null = null;
+let servicePromise: Promise<SupabaseService> | null = null;
 const listeners = new Set<(state: AuthState) => void>();
+
+function getSupabaseService() {
+  servicePromise ||= import('@/services/supabase');
+  return servicePromise;
+}
 
 function emitAuthState() {
   for (const listener of listeners) listener(authState);
 }
 
-async function refreshAuthState() {
+async function refreshAuthState(service?: SupabaseService) {
   try {
-    const user = await getCurrentUser();
+    const authService = service || await getSupabaseService();
+    const user = await authService.getCurrentUser();
     authState = { user, loading: false, error: null };
   } catch (err) {
     authState = {
@@ -31,17 +39,24 @@ async function refreshAuthState() {
   emitAuthState();
 }
 
-function ensureInitialized() {
-  if (initialized) return;
-  initialized = true;
-  void refreshAuthState();
+async function initializeAuth() {
+  const service = await getSupabaseService();
+  if (!initialized) return;
+  await refreshAuthState(service);
+  if (!initialized) return;
 
-  if (supabase) {
-    const { data } = supabase.auth.onAuthStateChange(() => {
-      void refreshAuthState();
+  if (service.supabase) {
+    const { data } = service.supabase.auth.onAuthStateChange(() => {
+      void refreshAuthState(service);
     });
     authSubscription = data.subscription;
   }
+}
+
+function ensureInitialized() {
+  if (initialized) return;
+  initialized = true;
+  void initializeAuth();
 }
 
 export function useAuth() {
@@ -68,7 +83,8 @@ export function useAuth() {
   }, []);
 
   const logout = useCallback(async () => {
-    await supabaseSignOut();
+    const service = await getSupabaseService();
+    await service.signOut();
     authState = { user: null, loading: false, error: null };
     emitAuthState();
   }, []);

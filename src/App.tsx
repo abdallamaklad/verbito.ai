@@ -2,9 +2,9 @@ import { Suspense,lazy,useEffect } from 'react';
 import { Link,Navigate,Route,Routes,useLocation } from 'react-router-dom';
 import PageLayout from './components/layout/PageLayout';
 import { Spinner } from './components/ui/spinner';
+import Home from './pages/Home';
 import { analytics } from './services/analytics';
 
-const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const Account = lazy(() => import('./pages/Account'));
 const Admin = lazy(() => import('./pages/Admin'));

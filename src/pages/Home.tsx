@@ -35,7 +35,6 @@ import SEOHead from '../components/shared/SEOHead';
 import UpgradeModal from '../components/shared/UpgradeModal';
 import { usePageTranslations } from '../hooks/useTranslation';
 import { homepage as homepageTranslations } from '../lib/translations/homepage';
-import { captureLead } from '../services/supabase';
 
 /* ------------------------------------------------------------------ */
 /*  ANIMATION VARIANTS                                                 */
@@ -61,6 +60,7 @@ function ParticleField() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -153,6 +153,7 @@ function ParticleField() {
   return (
     <canvas
       ref={canvasRef}
+      className="hidden md:block"
       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}
     />
   );
@@ -220,6 +221,7 @@ export default function Home() {
     }
     setLeadSubmitting(true);
     try {
+      const { captureLead } = await import('../services/supabase');
       await captureLead(leadEmail, 'homepage_lead_magnet', 'ai-prompting-resources');
       toast.success('Check your inbox! Resources are on their way.');
       setLeadEmail('');
@@ -296,14 +298,9 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-            className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-gray-900 dark:text-white leading-tight mb-6"
-          >
+          <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-gray-900 dark:text-white leading-tight mb-6">
             {ht.heroTitle}
-          </motion.h1>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -839,6 +836,8 @@ Tone: Professional, aspirational, urgent without being aggressive
                 <img
                   src="/course-preview.jpg"
                   alt="Master Prompt Engineering Course"
+                  width="1376"
+                  height="768"
                   loading="lazy"
                   className="w-full h-auto object-cover"
                 />

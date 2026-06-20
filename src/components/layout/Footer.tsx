@@ -68,7 +68,7 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{ft.product}</h4>
+            <p className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{ft.product}</p>
             <ul className="space-y-3">
               {productLinks.map((link) => (
                 <li key={link.labelKey}>
@@ -85,7 +85,7 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{ft.resources}</h4>
+            <p className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{ft.resources}</p>
             <ul className="space-y-3">
               {resourceLinks.map((link) => (
                 <li key={link.labelKey}>
@@ -102,7 +102,7 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{ft.company}</h4>
+            <p className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{ft.company}</p>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.labelKey}>
@@ -122,7 +122,7 @@ export default function Footer() {
         <div className="mt-12 pt-10 border-t border-gray-800">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-              <h4 className="text-sm font-semibold text-white mb-1">{ft.stayUpdated}</h4>
+              <p className="text-sm font-semibold text-white mb-1">{ft.stayUpdated}</p>
               <p className="text-sm text-gray-400">{ft.stayUpdatedDesc}</p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto">
@@ -134,14 +134,14 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-10 pt-6 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-400">
             &copy; 2026 Verbito.ai. {ft.rights}
           </p>
           <div className="flex items-center gap-6">
-            <Link to="/terms" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">{ft.terms}</Link>
-            <Link to="/privacy" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">{ft.privacy}</Link>
-            <Link to="/cookies" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">{ft.cookies}</Link>
-            <Link to="/affiliate-disclosure" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">{ft.affiliate}</Link>
+            <Link to="/terms" className="text-xs text-gray-400 hover:text-white transition-colors">{ft.terms}</Link>
+            <Link to="/privacy" className="text-xs text-gray-400 hover:text-white transition-colors">{ft.privacy}</Link>
+            <Link to="/cookies" className="text-xs text-gray-400 hover:text-white transition-colors">{ft.cookies}</Link>
+            <Link to="/affiliate-disclosure" className="text-xs text-gray-400 hover:text-white transition-colors">{ft.affiliate}</Link>
           </div>
         </div>
 
@@ -151,13 +151,15 @@ export default function Footer() {
             href="https://www.wearequantara.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-xs text-gray-500 hover:text-violet-400 transition-colors group"
+            className="flex items-center gap-2 text-xs text-gray-400 hover:text-violet-300 transition-colors group"
           >
             <span>{ft.builtBy}</span>
             <img
               src="/quantara-logo.png"
               alt="Quantara"
-              className="h-4 w-auto opacity-70 group-hover:opacity-100 transition-opacity"
+              width="16"
+              height="16"
+              className="h-4 w-4 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
             />
             <span className="font-medium">Quantara</span>
           </a>

@@ -1,5 +1,4 @@
 import { Toaster } from '@/components/ui/sonner';
-import { AnimatePresence,motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { Outlet,useLocation } from 'react-router-dom';
 import Footer from './Footer';
@@ -24,17 +23,7 @@ export default function PageLayout() {
 
       <Navbar />
       <main id="main-content" className="flex-1">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.25 }}
-          >
-            <Outlet />
-          </motion.div>
-        </AnimatePresence>
+        <Outlet />
       </main>
       <Footer />
       <Toaster position="top-right" richColors />
