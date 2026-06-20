@@ -67,11 +67,32 @@ jobs:
 
       - name: Upload build and deploy script
         run: |
-          scp $SSH_OPTIONS verbito-dist.tar.gz "$VPS_USER@$VPS_HOST:/tmp/verbito-dist.tar.gz"
-          scp $SSH_OPTIONS scripts/deploy/deploy-vps.sh "$VPS_USER@$VPS_HOST:/tmp/deploy-verbito.sh"
+          for attempt in 1 2 3; do
+            if scp $SSH_OPTIONS verbito-dist.tar.gz "$VPS_USER@$VPS_HOST:/tmp/verbito-dist.tar.gz" && \
+               scp $SSH_OPTIONS scripts/deploy/deploy-vps.sh "$VPS_USER@$VPS_HOST:/tmp/deploy-verbito.sh"; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "VPS upload failed after $attempt attempts" >&2
+              exit 1
+            fi
+            echo "VPS upload failed on attempt $attempt; retrying" >&2
+            sleep $((attempt * 5))
+          done
 
       - name: Deploy on VPS
-        run: ssh $SSH_OPTIONS "$VPS_USER@$VPS_HOST" "bash /tmp/deploy-verbito.sh /tmp/verbito-dist.tar.gz"
+        run: |
+          for attempt in 1 2 3; do
+            if ssh $SSH_OPTIONS "$VPS_USER@$VPS_HOST" "bash /tmp/deploy-verbito.sh /tmp/verbito-dist.tar.gz"; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "VPS deploy failed after $attempt attempts" >&2
+              exit 1
+            fi
+            echo "VPS deploy failed on attempt $attempt; retrying" >&2
+            sleep $((attempt * 5))
+          done
 
       - name: Smoke test
         run: |
