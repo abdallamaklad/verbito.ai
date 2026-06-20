@@ -92,6 +92,7 @@ export default function Article() {
         title={`${article.title} — Verbito.ai`}
         description={article.excerpt}
         ogType="article"
+        ogImage={article.image}
         canonicalUrl={`https://verbito.ai/knowledge/${article.slug}`}
       />
 
@@ -154,14 +155,14 @@ export default function Article() {
               </div>
             </header>
 
-            {/* Hero Image Placeholder */}
-            <div className="aspect-[21/9] bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-10">
-              <div className="text-center p-8">
-                <div className="w-16 h-16 bg-violet-100 dark:bg-violet-900/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                  <BookOpen className="w-8 h-8 text-violet-600" />
-                </div>
-                <p className="text-sm text-gray-400">Article Cover</p>
-              </div>
+            {/* Hero Image */}
+            <div className="aspect-[16/9] sm:aspect-[21/9] overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 mb-10">
+              <img
+                src={article.image}
+                alt={article.title}
+                className="h-full w-full object-cover"
+                fetchPriority="high"
+              />
             </div>
 
             {/* Article Content */}
@@ -266,20 +267,30 @@ export default function Article() {
                     <Link
                       key={r.id}
                       to={`/knowledge/${r.slug}`}
-                      className="group bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:shadow-card-hover transition-shadow"
+                      className="group overflow-hidden bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:shadow-card-hover transition-shadow"
                     >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded-full">
-                          {r.category}
-                        </span>
-                        <span className="text-xs text-gray-500 flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {r.readTime}
-                        </span>
+                      <div className="aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
+                        <img
+                          src={r.image}
+                          alt={r.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                          loading="lazy"
+                        />
                       </div>
-                      <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors text-sm line-clamp-2">
-                        {r.title}
-                      </h4>
+                      <div className="p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded-full">
+                            {r.category}
+                          </span>
+                          <span className="text-xs text-gray-500 flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {r.readTime}
+                          </span>
+                        </div>
+                        <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors text-sm line-clamp-2">
+                          {r.title}
+                        </h4>
+                      </div>
                     </Link>
                   ))}
                 </div>

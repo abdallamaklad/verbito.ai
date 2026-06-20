@@ -12,7 +12,6 @@ Lightbulb,
 Mail,
 Palette,
 Search,
-Sparkles,
 Star,
 Target,
 TrendingUp,
@@ -148,13 +147,13 @@ export default function Knowledge() {
                 className="group block bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-card-hover transition-shadow"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2">
-                  <div className="aspect-video md:aspect-auto bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                    <div className="text-center p-8">
-                      <div className="w-20 h-20 bg-violet-100 dark:bg-violet-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <Sparkles className="w-10 h-10 text-violet-600" />
-                      </div>
-                      <p className="text-sm text-gray-400">{tt.featuredArticle}</p>
-                    </div>
+                  <div className="aspect-video md:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
+                    <img
+                      src={featured.image}
+                      alt={featured.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      fetchPriority="high"
+                    />
                   </div>
                   <div className="p-8 flex flex-col justify-center">
                     <div className="flex items-center gap-2 mb-3">
@@ -202,10 +201,13 @@ export default function Knowledge() {
                     to={`/knowledge/${article.slug}`}
                     className="group block bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-card-hover transition-shadow h-full"
                   >
-                    <div className="aspect-[16/9] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                      <div className="w-12 h-12 bg-violet-100 dark:bg-violet-900/20 rounded-xl flex items-center justify-center">
-                        <BookOpen className="w-6 h-6 text-violet-600" />
-                      </div>
+                    <div className="aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                        loading="lazy"
+                      />
                     </div>
                     <div className="p-5">
                       <div className="flex items-center gap-2 mb-3">
