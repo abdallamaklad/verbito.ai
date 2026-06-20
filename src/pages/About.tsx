@@ -4,16 +4,14 @@ import { motion } from 'framer-motion';
 import {
 ArrowRight,
 Award,
-BookOpen,
-Code2,
+Building2,
 Globe,
 Heart,
-Lightbulb,
+Mail,
+MapPin,
 Shield,
 Sparkles,
 Target,
-TrendingUp,
-Users,
 Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -43,37 +41,27 @@ export default function About() {
       description: tt.value4Desc,
       icon: Shield,
     },
-    {
-      title: tt.value5Title,
-      description: tt.value5Desc,
-      icon: Users,
-    },
-    {
-      title: tt.value6Title,
-      description: tt.value6Desc,
-      icon: TrendingUp,
-    },
-  ];
-
-  const stats = [
-    { value: '200+', label: tt.statTemplates },
-    { value: '50', label: tt.statLessons },
-    { value: '12K+', label: tt.statReaders },
-    { value: '3K+', label: tt.statStudents },
-  ];
-
-  const milestones = [
-    { year: '2024', title: 'Verbito Founded', desc: 'Started with a simple mission: make prompt engineering accessible.' },
-    { year: '2025', title: 'Prompt Library Launch', desc: 'Released our first 100 prompt templates across 15 categories.' },
-    { year: '2025', title: 'Course Released', desc: 'Launched the Master Prompt Engineering course with 10 modules.' },
-    { year: '2026', title: 'Full Platform', desc: 'Reached 12,000+ active users with comprehensive AI tools and resources.' },
   ];
 
   return (
     <>
       <SEOHead
         title={tt.pageTitle}
-        description="Learn about Verbito.ai's mission to make prompt engineering accessible. Meet our values, milestones, and the team behind the platform."
+        description="Learn about Verbito.ai's mission, values, and the Quantara LLC company behind the platform."
+        canonicalUrl="https://verbito.ai/about"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: 'Quantara LLC',
+          url: 'https://verbito.ai',
+          email: 'verbito.ai@wearequantara.com',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'Sharjah Media City',
+            addressLocality: 'Sharjah',
+            addressCountry: 'AE',
+          },
+        }}
       />
 
       {/* Hero */}
@@ -97,21 +85,6 @@ export default function About() {
             <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
               {tt.heroText}
             </p>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-20"
-          >
-            {stats.map((stat) => (
-              <div key={stat.label} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 text-center">
-                <p className="text-3xl font-heading font-bold text-violet-600 dark:text-violet-400 mb-1">{stat.value}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
-              </div>
-            ))}
           </motion.div>
 
           {/* Mission */}
@@ -165,64 +138,47 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Timeline */}
+          {/* Company details */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="mb-20"
           >
-            <div className="text-center mb-10">
-              <h2 className="font-heading font-bold text-3xl text-gray-900 dark:text-white mb-4">{tt.journey}</h2>
-              <p className="text-gray-600 dark:text-gray-400">{tt.journeySubtitle}</p>
-            </div>
-            <div className="max-w-2xl mx-auto">
-              {milestones.map((m, i) => (
-                <motion.div
-                  key={m.year}
-                  initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex items-start gap-4 mb-8 last:mb-0"
-                >
-                  <div className="w-16 h-16 bg-violet-100 dark:bg-violet-900/20 rounded-xl flex items-center justify-center shrink-0">
-                    <span className="font-heading font-bold text-violet-600 dark:text-violet-400">{m.year}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{m.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{m.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Team Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <h2 className="font-heading font-bold text-3xl text-gray-900 dark:text-white mb-4">{tt.team}</h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
-              {tt.teamText}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              {[
-                { role: tt.roleFounder, icon: Lightbulb, desc: tt.roleFounderDesc },
-                { role: tt.roleProduct, icon: Code2, desc: tt.roleProductDesc },
-                { role: tt.roleEducator, icon: BookOpen, desc: tt.roleEducatorDesc },
-              ].map((t) => (
-                <div key={t.role} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
-                  <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <t.icon className="w-7 h-7 text-gray-500" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{t.role}</h3>
-                  <p className="text-sm text-gray-500">{t.desc}</p>
+            <div className="mx-auto max-w-4xl border-y border-gray-200 py-10 dark:border-gray-800">
+              <div className="mb-8 max-w-2xl">
+                <p className="mb-2 text-sm font-semibold uppercase text-violet-600">Company</p>
+                <h2 className="mb-3 font-heading text-3xl font-bold text-gray-900 dark:text-white">
+                  Built and operated by Quantara LLC
+                </h2>
+                <p className="leading-relaxed text-gray-600 dark:text-gray-400">
+                  Verbito is a Quantara LLC product developed in the UAE to make practical prompt engineering more accessible to individuals and teams.
+                </p>
+              </div>
+              <dl className="grid gap-6 sm:grid-cols-3">
+                <div>
+                  <dt className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    <Building2 className="h-4 w-4 text-violet-600" /> Legal entity
+                  </dt>
+                  <dd className="text-sm text-gray-600 dark:text-gray-400">Quantara LLC</dd>
                 </div>
-              ))}
+                <div>
+                  <dt className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    <MapPin className="h-4 w-4 text-violet-600" /> Registered address
+                  </dt>
+                  <dd className="text-sm text-gray-600 dark:text-gray-400">Sharjah Media City, Sharjah, UAE</dd>
+                </div>
+                <div>
+                  <dt className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    <Mail className="h-4 w-4 text-violet-600" /> Contact
+                  </dt>
+                  <dd className="text-sm">
+                    <a className="text-violet-600 hover:underline dark:text-violet-400" href="mailto:verbito.ai@wearequantara.com">
+                      verbito.ai@wearequantara.com
+                    </a>
+                  </dd>
+                </div>
+              </dl>
             </div>
           </motion.div>
 

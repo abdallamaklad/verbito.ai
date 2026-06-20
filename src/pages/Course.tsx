@@ -28,7 +28,6 @@ RefreshCw,
 Shield,
 Shuffle,
 Sparkles,
-Star,
 Users,
 Zap
 } from 'lucide-react';
@@ -165,8 +164,15 @@ export default function Course() {
       <SEOHead
         title={`${tt.courseTitle} Course — Verbito.ai`}
         description={tt.courseDescription}
-        canonicalUrl="https://verbito.ai/course"
+        canonicalUrl="https://verbito.ai/course/master-prompt-engineering"
         ogImage="/og-course.jpg"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'Course',
+          name: tt.courseTitle,
+          description: tt.courseDescription,
+          provider: { '@type': 'Organization', name: 'Quantara LLC', url: 'https://verbito.ai' },
+        }}
       />
 
       {/* 1. HERO */}
@@ -242,14 +248,7 @@ export default function Course() {
               variants={fadeUp} initial="hidden" animate="visible" custom={1}
               className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-8"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-5 h-5 text-amber-400 fill-amber-400" />
-                  ))}
-                  <span className="text-sm text-gray-400 ml-2">4.9/5 (312 reviews)</span>
-                </div>
-              </div>
+              <p className="mb-6 text-sm font-medium text-violet-300">10 modules · 50 lessons · Lifetime access</p>
               <div className="mb-6">
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-heading font-bold text-white">$197</span>

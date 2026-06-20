@@ -54,7 +54,7 @@ verbito.ai, www.verbito.ai {
 
 \thandle {
 \t\theader Cache-Control "no-cache"
-\t\ttry_files {path} /index.html
+\t\ttry_files {path} {path}.html {path}/index.html /index.html
 \t\tfile_server
 \t}
 

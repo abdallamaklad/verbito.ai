@@ -76,8 +76,8 @@ export default function Login() {
           <h2 className="font-heading font-bold text-3xl mb-4">{tt.welcomeBackTitle}</h2>
           <p className="text-violet-100 mb-8">{tt.welcomeBackText}</p>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
-            <p className="text-sm text-violet-100 italic">&ldquo;{tt.testimonialQuote}&rdquo;</p>
-            <p className="text-xs text-violet-200 mt-3">{tt.testimonialAuthor}</p>
+            <p className="text-sm font-medium text-white">Your prompt workspace</p>
+            <p className="text-xs text-violet-200 mt-2">Generate, save, organize, and improve prompts from one account.</p>
           </div>
         </div>
       </div>

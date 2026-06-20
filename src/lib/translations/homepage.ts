@@ -2,7 +2,7 @@ import type { LanguageCode } from '../languages';
 
 export const homepage: Record<LanguageCode, Record<string, string>> = {
   en: {
-    heroBadge: 'Trusted by 12,000+ users worldwide',
+    heroBadge: 'Two free prompt generations every day',
     heroTitle: 'Turn Rough Ideas Into Expert-Level AI Prompts',
     heroSubtitle: 'Generate powerful prompts for ChatGPT, Claude, Gemini, Midjourney, business, marketing, coding, research, and productivity. Verbito helps you get better AI results without becoming a prompt engineer.',
     heroCta: 'Generate Your First Prompt',
@@ -41,7 +41,7 @@ export const homepage: Record<LanguageCode, Record<string, string>> = {
     testimonialsTitle: 'Loved by Professionals Worldwide',
   },
   es: {
-    heroBadge: 'Con la confianza de m\u00E1s de 12.000 usuarios en todo el mundo',
+    heroBadge: 'Dos generaciones de prompts gratis cada d\u00EDa',
     heroTitle: 'Convierte Ideas B\u00E1sicas en Prompts de IA de Nivel Experto',
     heroSubtitle: 'Genera prompts potentes para ChatGPT, Claude, Gemini, Midjourney, negocios, marketing, programaci\u00F3n, investigaci\u00F3n y productividad. Verbito te ayuda a obtener mejores resultados con IA sin convertirte en ingeniero de prompts.',
     heroCta: 'Genera Tu Primer Prompt',
@@ -80,7 +80,7 @@ export const homepage: Record<LanguageCode, Record<string, string>> = {
     testimonialsTitle: 'Adorado por Profesionales en Todo el Mundo',
   },
   fr: {
-    heroBadge: 'Adopt\u00E9 par plus de 12 000 utilisateurs dans le monde',
+    heroBadge: 'Deux g\u00E9n\u00E9rations de prompts gratuites par jour',
     heroTitle: 'Transformez des Id\u00E9es Brutes en Prompts IA de Niveau Expert',
     heroSubtitle: 'G\u00E9n\u00E9rez des prompts puissants pour ChatGPT, Claude, Gemini, Midjourney, le business, le marketing, le code, la recherche et la productivit\u00E9. Verbito vous aide \u00E0 obtenir de meilleurs r\u00E9sultats IA sans devenir expert en prompt engineering.',
     heroCta: 'G\u00E9n\u00E9rez Votre Premier Prompt',
@@ -119,7 +119,7 @@ export const homepage: Record<LanguageCode, Record<string, string>> = {
     testimonialsTitle: 'Ador\u00E9 par les Professionnels du Monde Entier',
   },
   de: {
-    heroBadge: 'Von mehr als 12.000 Nutzern weltweit verwendet',
+    heroBadge: 'Zwei kostenlose Prompt-Generierungen pro Tag',
     heroTitle: 'Verwandle Grobe Ideen in KI-Prompts auf Expertenniveau',
     heroSubtitle: 'Erstelle leistungsstarke Prompts f\u00FCr ChatGPT, Claude, Gemini, Midjourney, Business, Marketing, Coding, Recherche und Produktivit\u00E4t. Verbito hilft dir, bessere KI-Ergebnisse zu erzielen, ohne Prompt Engineer zu werden.',
     heroCta: 'Generiere Deinen Ersten Prompt',
@@ -158,7 +158,7 @@ export const homepage: Record<LanguageCode, Record<string, string>> = {
     testimonialsTitle: 'Gesch\u00E4tzt von Fachleuten Weltweit',
   },
   ar: {
-    heroBadge: '\u064A\u062B\u0642 \u0628\u0647 \u0623\u0643\u062B\u0631 \u0645\u0646 12,000 \u0645\u0633\u062A\u062E\u062F\u0645 \u062D\u0648\u0644 \u0627\u0644\u0639\u0627\u0644\u0645',
+    heroBadge: '\u0625\u0646\u0634\u0627\u0621 \u062A\u0644\u0645\u064A\u062D\u064A\u0646 \u0645\u062C\u0627\u0646\u064B\u0627 \u0643\u0644 \u064A\u0648\u0645',
     heroTitle: '\u062D\u0648\u0651\u0644 \u0627\u0644\u0623\u0641\u0643\u0627\u0631 \u0627\u0644\u0623\u0648\u0644\u064A\u0629 \u0625\u0644\u0649 \u062A\u0644\u0645\u064A\u062D\u0627\u062A \u0630\u0643\u0627\u0621 \u0627\u0635\u0637\u0646\u0627\u0639\u064A \u0628\u0645\u0633\u062A\u0648\u0649 \u0627\u062D\u062A\u0631\u0627\u0641\u064A',
     heroSubtitle: '\u0623\u0646\u0634\u0626 \u062A\u0644\u0645\u064A\u062D\u0627\u062A \u0642\u0648\u064A\u0629 \u0644\u0640 ChatGPT \u0648Claude \u0648Gemini \u0648Midjourney \u0648\u0627\u0644\u0623\u0639\u0645\u0627\u0644 \u0648\u0627\u0644\u062A\u0633\u0648\u064A\u0642 \u0648\u0627\u0644\u0628\u0631\u0645\u062C\u0629 \u0648\u0627\u0644\u0628\u062D\u062B \u0648\u0627\u0644\u0625\u0646\u062A\u0627\u062C\u064A\u0629. \u064A\u0633\u0627\u0639\u062F\u0643 Verbito \u0639\u0644\u0649 \u062A\u062D\u0642\u064A\u0642 \u0646\u062A\u0627\u0626\u062C \u0623\u0641\u0636\u0644 \u0645\u0639 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u062F\u0648\u0646 \u0623\u0646 \u062A\u0635\u0628\u062D \u0645\u0647\u0646\u062F\u0633 \u062A\u0644\u0645\u064A\u062D\u0627\u062A.',
     heroCta: '\u0623\u0646\u0634\u0626 \u0623\u0648\u0644 \u062A\u0644\u0645\u064A\u062D',

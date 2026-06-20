@@ -94,6 +94,16 @@ export default function Article() {
         ogType="article"
         ogImage={article.image}
         canonicalUrl={`https://verbito.ai/knowledge/${article.slug}`}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: article.title,
+          description: article.excerpt,
+          image: `https://verbito.ai${article.image}`,
+          datePublished: new Date(article.date).toISOString().slice(0, 10),
+          author: { '@type': 'Organization', name: 'Quantara LLC' },
+          publisher: { '@type': 'Organization', name: 'Quantara LLC', url: 'https://verbito.ai' },
+        }}
       />
 
       {/* Reading Progress Bar */}
@@ -312,7 +322,7 @@ export default function Article() {
                   Enjoyed This Article?
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
-                  Get weekly prompt engineering tips delivered to your inbox. Join 12,000+ readers.
+                  Get practical prompt engineering tips delivered to your inbox.
                 </p>
                 {subscribed ? (
                   <div className="bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg py-3 text-sm font-medium flex items-center justify-center gap-2">

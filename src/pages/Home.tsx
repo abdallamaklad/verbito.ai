@@ -320,19 +320,16 @@ export default function Home() {
             Get 2 free prompt generations every day. No credit card required.
           </motion.p>
 
-          {/* Star Rating */}
+          {/* Product proof */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center justify-center gap-2 mb-8"
+            className="mb-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-medium text-gray-700 dark:text-gray-300"
           >
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className="w-5 h-5 text-amber-400 fill-amber-400" />
-              ))}
-            </div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">4.9/5 from 2,000+ users</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="h-4 w-4 text-emerald-500" /> Structured prompts</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="h-4 w-4 text-emerald-500" /> Model-specific output</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="h-4 w-4 text-emerald-500" /> Quality feedback</span>
           </motion.div>
 
           {/* CTAs */}
@@ -783,14 +780,7 @@ Tone: Professional, aspirational, urgent without being aggressive
                 Go from beginner to expert in 10 comprehensive modules. Learn the techniques top AI professionals use to get extraordinary results from ChatGPT, Claude, Gemini, and Midjourney.
               </p>
 
-              <div className="flex items-center gap-4 mb-8">
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-400">4.9/5 — 3,241 students enrolled</span>
-              </div>
+              <p className="mb-8 text-sm text-gray-400">10 modules · 50 lessons · Self-paced learning</p>
 
               <ul className="space-y-3 mb-8">
                 {[
@@ -1141,7 +1131,7 @@ Tone: Professional, aspirational, urgent without being aggressive
               Start with 2 free prompt generations today.
             </h2>
             <p className="text-lg text-violet-100 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Join 12,000+ users who are already creating expert-level prompts with Verbito. No credit card required.
+              Create clearer, more useful AI prompts with a free account. No credit card required.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

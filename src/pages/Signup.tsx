@@ -17,8 +17,8 @@ export default function Signup() {
   const copy = {
     startJourneyTitle: tt.startJourneyTitle || 'Start building better prompts',
     startJourneyText: tt.startJourneyText || 'Create, save, and improve AI prompts with a real Verbito account.',
-    statPrompts: tt.statPrompts || 'prompts generated',
-    statRating: tt.statRating || 'average user rating',
+    statPrompts: tt.statPrompts || 'free prompts daily',
+    statRating: tt.statRating || 'course lessons',
     getStartedFree: tt.getStartedFree || 'Get started free. Upgrade only when you need more power.',
     continueWithGoogle: tt.continueWithGoogle || 'Continue with Google',
     orSignUpWithEmail: tt.orSignUpWithEmail || 'Or sign up with email',
@@ -102,11 +102,11 @@ export default function Signup() {
           <p className="mx-auto mb-10 max-w-md text-violet-100">{copy.startJourneyText}</p>
           <div className="flex items-center justify-center gap-10 text-sm text-violet-200">
             <div className="text-center">
-              <p className="text-3xl font-bold text-white">12,400+</p>
+              <p className="text-3xl font-bold text-white">2</p>
               <p className="mt-1 uppercase tracking-wide">{copy.statPrompts}</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-white">4.9/5</p>
+              <p className="text-3xl font-bold text-white">50</p>
               <p className="mt-1 uppercase tracking-wide">{copy.statRating}</p>
             </div>
           </div>
