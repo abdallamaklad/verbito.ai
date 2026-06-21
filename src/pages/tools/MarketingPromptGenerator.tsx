@@ -11,7 +11,7 @@ export default function MarketingPromptGenerator() {
       defaultOutputType="Advertisement"
       seoTitle="Marketing Prompt Generator — AI for Marketing & Copywriting | Verbito.ai"
       seoDescription="Generate AI prompts for marketing campaigns, content strategy, copywriting, and audience research. Free tool — no signup required."
-      ogImage="/og-marketing-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={TrendingUp}
       iconColor="text-rose-600"
       gradientFrom="from-rose-100"

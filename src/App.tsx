@@ -85,6 +85,21 @@ export default function App() {
 
   useEffect(() => {
     analytics.pageView(location.pathname, { search: location.search });
+
+    const privateRoute = /^(?:\/(?:login|signup|forgot-password|dashboard|account|admin|billing|collections|saved-prompts)(?:\/|$)|\/course\/(?:dashboard|lesson|certificate)(?:\/|$))/.test(location.pathname);
+    let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.name = 'robots';
+      document.head.appendChild(robots);
+    }
+    robots.content = privateRoute
+      ? 'noindex, nofollow, noarchive'
+      : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+
+    if (privateRoute) {
+      document.querySelector('link[rel="canonical"]')?.remove();
+    }
   }, [location.pathname, location.search]);
 
   return (

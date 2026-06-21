@@ -11,7 +11,7 @@ export default function StudentPromptGenerator() {
       defaultOutputType="Lesson Plan"
       seoTitle="Student Prompt Generator — AI Study Helper | Verbito.ai"
       seoDescription="Generate AI prompts for studying, essay writing, exam preparation, and learning. Perfect tool for students of all levels. Free — no signup required."
-      ogImage="/og-student-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={GraduationCap}
       iconColor="text-green-600"
       gradientFrom="from-green-100"

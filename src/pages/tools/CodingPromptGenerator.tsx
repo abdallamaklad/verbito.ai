@@ -11,7 +11,7 @@ export default function CodingPromptGenerator() {
       defaultOutputType="Code"
       seoTitle="Coding Prompt Generator — AI Code Assistant | Verbito.ai"
       seoDescription="Generate AI prompts for writing code, debugging, refactoring, code review, and technical documentation. Supports all major programming languages. Free tool."
-      ogImage="/og-coding-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={Code2}
       iconColor="text-purple-600"
       gradientFrom="from-purple-100"

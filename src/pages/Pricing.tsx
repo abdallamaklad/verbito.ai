@@ -83,7 +83,7 @@ function SimpleFaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+      <button type="button" aria-expanded={open} onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
         <span className="font-medium text-gray-900 dark:text-white pr-4">{q}</span>
         {open ? <ChevronUp className="w-5 h-5 text-gray-400 shrink-0" /> : <ChevronDown className="w-5 h-5 text-gray-400 shrink-0" />}
       </button>
@@ -133,6 +133,33 @@ export default function Pricing() {
         description="Start free with 2 prompts/day. Upgrade to Starter, Pro, or Unlimited when you're ready. Cancel anytime."
         canonicalUrl="https://verbito.ai/pricing"
         ogImage="/og-default.jpg"
+        schema={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'SoftwareApplication',
+              name: 'Verbito AI Prompt Generator',
+              applicationCategory: 'ProductivityApplication',
+              operatingSystem: 'Web',
+              url: 'https://verbito.ai/pricing',
+              offers: plans.map((plan) => ({
+                '@type': 'Offer',
+                name: `${plan.name} plan`,
+                price: String(plan.monthlyPrice),
+                priceCurrency: 'USD',
+                url: 'https://verbito.ai/pricing',
+              })),
+            },
+            {
+              '@type': 'FAQPage',
+              mainEntity: faqs.map(({ q, a }) => ({
+                '@type': 'Question',
+                name: q,
+                acceptedAnswer: { '@type': 'Answer', text: a },
+              })),
+            },
+          ],
+        }}
       />
 
       <div className="min-h-[100dvh] pt-24 pb-16 bg-white dark:bg-gray-950">
@@ -145,7 +172,7 @@ export default function Pricing() {
             {/* Toggle */}
             <div className="flex items-center justify-center gap-4 mt-8">
               <span className={`text-sm font-medium ${!isAnnual ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>Monthly</span>
-              <button onClick={() => setIsAnnual(!isAnnual)} className="relative w-14 h-7 bg-violet-600 rounded-full transition-colors">
+              <button type="button" aria-label="Toggle annual billing" aria-pressed={isAnnual} onClick={() => setIsAnnual(!isAnnual)} className="relative w-14 h-7 bg-violet-600 rounded-full transition-colors">
                 <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-sm transition-transform ${isAnnual ? 'translate-x-7' : 'translate-x-0.5'}`} />
               </button>
               <span className={`text-sm font-medium ${isAnnual ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>Annual</span>

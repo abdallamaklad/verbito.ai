@@ -11,7 +11,7 @@ export default function BusinessPromptGenerator() {
       defaultOutputType="Strategy"
       seoTitle="Business Prompt Generator — AI for Strategy & Planning | Verbito.ai"
       seoDescription="Generate AI prompts for business strategy, SWOT analysis, business plans, and more. Free tool — no signup required."
-      ogImage="/og-business-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={Briefcase}
       iconColor="text-blue-600"
       gradientFrom="from-blue-100"

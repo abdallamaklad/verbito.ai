@@ -5,6 +5,7 @@ const siteUrl = 'https://verbito.ai';
 const distDir = path.resolve('dist');
 const shell = await readFile(path.join(distDir, 'index.html'), 'utf8');
 const sitemap = await readFile(path.join(distDir, 'sitemap.xml'), 'utf8');
+const articleSource = await readFile(path.resolve('src/lib/data/articles.ts'), 'utf8');
 
 const page = (pathname, title, description, heading = title, image = '/og-default.jpg') => ({
   pathname, title, description, heading, image,
@@ -28,8 +29,38 @@ const articlePages = [
   page('/knowledge/the-future-of-prompt-engineering', 'The Future of Prompt Engineering: 2026 and Beyond', 'Explore the trends shaping how people structure instructions and work with AI systems.', undefined, '/blog-featured-3.jpg'),
 ];
 
+const articleDates = new Map(
+  [...articleSource.matchAll(/slug: '([^']+)'[\s\S]*?date: '([^']+)'/g)]
+    .map(([, slug, date]) => [`/knowledge/${slug}`, new Date(`${date} 12:00:00 UTC`).toISOString().slice(0, 10)]),
+);
+
+const privatePages = [
+  page('/login', 'Log In | Verbito', 'Log in to your Verbito account.', 'Log In'),
+  page('/signup', 'Create an Account | Verbito', 'Create your Verbito account.', 'Create an Account'),
+  page('/forgot-password', 'Reset Password | Verbito', 'Reset your Verbito account password.', 'Reset Password'),
+  page('/dashboard', 'Dashboard | Verbito', 'Manage your Verbito workspace.', 'Dashboard'),
+  page('/account', 'Account | Verbito', 'Manage your Verbito account.', 'Account'),
+  page('/admin', 'Admin | Verbito', 'Verbito administration.', 'Admin'),
+  page('/billing', 'Billing | Verbito', 'Manage your Verbito subscription and billing.', 'Billing'),
+  page('/collections', 'Collections | Verbito', 'Manage your private prompt collections.', 'Collections'),
+  page('/saved-prompts', 'Saved Prompts | Verbito', 'Manage your saved prompts.', 'Saved Prompts'),
+  page('/course/dashboard', 'Course Dashboard | Verbito', 'View your private course progress.', 'Course Dashboard'),
+  page('/course/certificate', 'Course Certificate | Verbito', 'View your Verbito course certificate.', 'Course Certificate'),
+].map((entry) => ({ ...entry, noIndex: true }));
+
+const homeFaqs = [
+  ['What is Verbito.ai?', 'Verbito.ai turns rough ideas into structured prompts for ChatGPT, Claude, Gemini, Midjourney, and other AI tools.'],
+  ['How many free prompts do I get?', 'Free accounts can generate up to 2 prompts per day without a credit card.'],
+  ['Do I need to know prompt engineering?', 'No. Describe what you need in plain language and Verbito structures the prompt for you.'],
+  ['Which AI models does Verbito support?', 'Verbito supports prompts for ChatGPT, Claude, Gemini, Midjourney, DALL-E, Stable Diffusion, and general-purpose AI models.'],
+  ['Can I save and organize my prompts?', 'Paid plans include prompt saving, history, and collections.'],
+  ['Is there a prompt engineering course?', 'Yes. Master Prompt Engineering includes 10 modules and 50 lessons.'],
+  ['What is the Prompt Score?', 'Prompt quality feedback covers clarity, context, specificity, constraints, output format, and reusability.'],
+  ['How do I cancel my subscription?', 'Subscriptions can be canceled from account settings and remain active through the current billing period.'],
+];
+
 const pages = [
-  page('/', 'Verbito - AI Prompt Generator', 'Turn rough ideas into expert-level prompts for ChatGPT, Claude, Gemini, Midjourney, and more.', 'Turn Rough Ideas Into Expert-Level AI Prompts'),
+  page('/', 'Verbito - Free AI Prompt Generator for ChatGPT, Claude & More', 'Create expert AI prompts for ChatGPT, Claude, Gemini and Midjourney in seconds. Get 2 free prompt generations daily. No credit card required.', 'Turn Rough Ideas Into Expert-Level AI Prompts'),
   page('/about', 'About Verbito and Quantara LLC', 'Learn why Quantara LLC built Verbito, how the platform approaches prompt engineering, and how to contact the team.', 'About Verbito'),
   page('/consulting', 'AI Prompt Consulting | Verbito', 'Get practical prompt engineering and AI workflow consulting for teams and organizations.', 'AI Prompt Consulting'),
   page('/contact', 'Contact Verbito', 'Contact the Verbito team at Quantara LLC for product, billing, support, or partnership enquiries.', 'Contact Verbito'),
@@ -59,6 +90,7 @@ const pages = [
   page('/disclaimer', 'Disclaimer | Verbito', 'Read the limitations and responsibilities that apply to Verbito AI-generated content and educational material.', 'Disclaimer'),
   page('/affiliate-disclosure', 'Affiliate Disclosure | Verbito', 'Learn how Verbito discloses affiliate relationships and sponsored recommendations.', 'Affiliate Disclosure'),
   ...articlePages,
+  ...privatePages,
 ];
 
 const escapeHtml = (value) => value
@@ -80,14 +112,15 @@ const renderPage = (entry) => {
   const schemaType = entry.pathname.includes('/course/')
     ? 'Course'
     : entry.pathname.startsWith('/knowledge/') ? 'Article' : 'WebPage';
-  const schema = {
+  const pageSchema = {
     '@context': 'https://schema.org',
     '@type': schemaType,
     name: entry.heading,
     ...(schemaType === 'Article' ? {
       headline: entry.heading,
       image,
-      author: { '@type': 'Organization', name: 'Quantara LLC', url: siteUrl },
+      author: { '@type': 'Organization', name: 'Quantara Editorial Team', url: `${siteUrl}/about` },
+      datePublished: articleDates.get(entry.pathname),
     } : {}),
     ...(schemaType === 'Course' ? {
       provider: { '@type': 'Organization', name: 'Quantara LLC', url: siteUrl },
@@ -107,11 +140,98 @@ const renderPage = (entry) => {
     },
   };
 
-  const fallback = `<div id="root"><header><a href="/">Verbito</a><nav aria-label="Primary"><a href="/prompt-generator">Prompt Generator</a> <a href="/prompts">Prompts</a> <a href="/knowledge">Knowledge</a> <a href="/pricing">Pricing</a></nav></header><main><h1>${escapeHtml(entry.heading)}</h1><p>${escapeHtml(entry.description)}</p><p><a href="/prompt-generator">Create a prompt</a> or <a href="/contact">contact Verbito</a>.</p></main><footer><p>Verbito is operated by Quantara LLC, Sharjah Media City, Sharjah, UAE.</p></footer></div>`;
+  let schema = entry.pathname === '/' ? {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': `${siteUrl}/#website`,
+        url: `${siteUrl}/`,
+        name: 'Verbito - Free AI Prompt Generator',
+        publisher: { '@id': `${siteUrl}/#organization` },
+        inLanguage: 'en-US',
+      },
+      {
+        '@type': 'Organization',
+        '@id': `${siteUrl}/#organization`,
+        name: 'Quantara LLC',
+        alternateName: 'Verbito',
+        url: `${siteUrl}/`,
+        email: 'verbito.ai@wearequantara.com',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Sharjah Media City',
+          addressLocality: 'Sharjah',
+          addressCountry: 'AE',
+        },
+      },
+      {
+        '@type': 'SoftwareApplication',
+        '@id': `${siteUrl}/#product`,
+        name: 'Verbito AI Prompt Generator',
+        applicationCategory: 'ProductivityApplication',
+        operatingSystem: 'Web',
+        description: entry.description,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        featureList: [
+          'Structured expert prompts',
+          'Model-specific prompt optimization',
+          'Prompt quality feedback',
+          'Reusable prompt library',
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${siteUrl}/#faq`,
+        mainEntity: homeFaqs.map(([question, answer]) => ({
+          '@type': 'Question',
+          name: question,
+          acceptedAnswer: { '@type': 'Answer', text: answer },
+        })),
+      },
+    ],
+  } : pageSchema;
+
+  if (entry.pathname === '/pricing') {
+    schema = {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Verbito AI Prompt Generator',
+      applicationCategory: 'ProductivityApplication',
+      operatingSystem: 'Web',
+      url: canonical,
+      offers: [
+        { '@type': 'Offer', name: 'Free plan', price: '0', priceCurrency: 'USD' },
+        { '@type': 'Offer', name: 'Starter plan', price: '12', priceCurrency: 'USD' },
+        { '@type': 'Offer', name: 'Pro plan', price: '29', priceCurrency: 'USD' },
+        { '@type': 'Offer', name: 'Unlimited plan', price: '79', priceCurrency: 'USD' },
+      ],
+    };
+  }
+
+  if (entry.pathname === '/course/master-prompt-engineering') {
+    schema = {
+      '@context': 'https://schema.org',
+      '@type': 'Course',
+      name: entry.heading,
+      description: entry.description,
+      url: canonical,
+      provider: { '@type': 'Organization', name: 'Quantara LLC', url: siteUrl },
+      offers: { '@type': 'Offer', price: '197', priceCurrency: 'USD', url: canonical },
+      hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'PT8H30M' },
+    };
+  }
+
+  const fallbackAction = entry.noIndex
+    ? '<p><a href="/">Return to Verbito</a>.</p>'
+    : '<p><a href="/prompt-generator">Create a prompt</a> or <a href="/contact">contact Verbito</a>.</p>';
+  const fallback = `<div id="root"><header><a href="/">Verbito</a><nav aria-label="Primary"><a href="/prompt-generator">Prompt Generator</a> <a href="/prompts">Prompts</a> <a href="/knowledge">Knowledge</a> <a href="/pricing">Pricing</a></nav></header><main><h1>${escapeHtml(entry.heading)}</h1><p>${escapeHtml(entry.description)}</p>${fallbackAction}</main><footer><p>Verbito is operated by Quantara LLC, Sharjah Media City, Sharjah, UAE.</p></footer></div>`;
 
   let html = shell.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(entry.title)}</title>`);
   html = setMeta(html, 'name', 'description', entry.description);
-  html = setMeta(html, 'name', 'robots', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
+  html = setMeta(html, 'name', 'robots', entry.noIndex
+    ? 'noindex, nofollow, noarchive'
+    : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
   html = setMeta(html, 'property', 'og:title', entry.title);
   html = setMeta(html, 'property', 'og:description', entry.description);
   html = setMeta(html, 'property', 'og:type', schemaType === 'Article' ? 'article' : 'website');
@@ -144,4 +264,4 @@ for (const entry of pages) {
   await writeFile(output, renderPage(entry));
 }
 
-console.log(`Prerendered ${pages.length} public routes.`);
+console.log(`Prerendered ${pages.length} routes.`);

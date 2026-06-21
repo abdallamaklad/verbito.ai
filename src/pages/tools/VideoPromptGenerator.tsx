@@ -11,7 +11,7 @@ export default function VideoPromptGenerator() {
       defaultOutputType="Video Prompt"
       seoTitle="AI Video Prompt Generator — Sora, Runway | Verbito.ai"
       seoDescription="Generate optimized AI video prompts for Sora, Runway Gen-2, Pika, and other video generation models. Create stunning video content with structured prompts."
-      ogImage="/og-video-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={Video}
       iconColor="text-red-500"
       gradientFrom="from-red-100"

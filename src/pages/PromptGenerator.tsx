@@ -391,7 +391,7 @@ export default function PromptGenerator() {
       <SEOHead
         title="AI Prompt Generator — Verbito.ai"
         description="Generate expert-level AI prompts for ChatGPT, Claude, Gemini, Midjourney, and more. Get optimized prompts with quality scores, multiple versions, and follow-up suggestions."
-        ogImage="/og-prompt-generator.jpg"
+        ogImage="/og-default.jpg"
       />
       <UpgradeModal isOpen={showUpgrade} onClose={() => setShowUpgrade(false)} />
 

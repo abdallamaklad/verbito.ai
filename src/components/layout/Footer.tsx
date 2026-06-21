@@ -2,6 +2,7 @@ import { FolderOpen,Github,Lightbulb,Linkedin,Sparkles,Twitter,Youtube,Zap } fro
 import { Link } from 'react-router-dom';
 import { usePageTranslations } from '@/hooks/useTranslation';
 import { footer as footerTranslations } from '@/lib/translations/footer';
+import OptimizedImage from '../shared/OptimizedImage';
 import NewsletterSignup from '../shared/NewsletterSignup';
 import { LanguageSelector } from '../shared/LanguageSelector';
 
@@ -154,7 +155,7 @@ export default function Footer() {
             className="flex items-center gap-2 text-xs text-gray-400 hover:text-violet-300 transition-colors group"
           >
             <span>{ft.builtBy}</span>
-            <img
+            <OptimizedImage
               src="/quantara-logo.png"
               alt="Quantara"
               width="16"

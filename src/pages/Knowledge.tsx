@@ -21,6 +21,7 @@ Zap
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEOHead from '../components/shared/SEOHead';
+import OptimizedImage from '../components/shared/OptimizedImage';
 import { articles } from '../lib/data/articles';
 
 const categories = [
@@ -148,9 +149,12 @@ export default function Knowledge() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <div className="aspect-video md:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <img
+                    <OptimizedImage
                       src={featured.image}
                       alt={featured.title}
+                      width="1376"
+                      height="768"
+                      sizes="(min-width: 768px) 50vw, 100vw"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       fetchPriority="high"
                     />
@@ -202,9 +206,12 @@ export default function Knowledge() {
                     className="group block bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-card-hover transition-shadow h-full"
                   >
                     <div className="aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                      <img
+                      <OptimizedImage
                         src={article.image}
                         alt={article.title}
+                        width="1376"
+                        height="768"
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                         loading="lazy"
                       />

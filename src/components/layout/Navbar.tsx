@@ -1,5 +1,4 @@
-import { AnimatePresence,motion } from 'framer-motion';
-import { BookOpen,ChevronDown,CreditCard,FolderOpen,LayoutDashboard,Lightbulb,LogIn,Menu,Sparkles,UserPlus,X,Zap } from 'lucide-react';
+import { BookOpen,Building2,ChevronDown,CreditCard,FolderOpen,LayoutDashboard,Lightbulb,LogIn,Menu,Sparkles,UserPlus,X,Zap } from 'lucide-react';
 import { useEffect,useState } from 'react';
 import { Link,useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -7,6 +6,10 @@ import { usePageTranslations } from '@/hooks/useTranslation';
 import { navbar as navTranslations } from '@/lib/translations/navbar';
 import DarkModeToggle from '../shared/DarkModeToggle';
 import { LanguageSelector } from '../shared/LanguageSelector';
+import AnimatePresence from '../shared/StaticPresence';
+import { StaticMotionDiv } from '../shared/StaticMotion';
+
+const motion = { div: StaticMotionDiv };
 
 const navLinks = [
   { labelKey: 'promptGenerator', href: '/prompt-generator', icon: Zap },
@@ -14,6 +17,7 @@ const navLinks = [
   { labelKey: 'course', href: '/course/master-prompt-engineering', icon: BookOpen },
   { labelKey: 'knowledge', href: '/knowledge', icon: Lightbulb },
   { labelKey: 'prompts', href: '/prompts', icon: FolderOpen },
+  { labelKey: 'about', href: '/about', icon: Building2 },
 ];
 
 const resourcesDropdown = [

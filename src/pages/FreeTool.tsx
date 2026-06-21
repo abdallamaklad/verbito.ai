@@ -114,7 +114,7 @@ export default function FreeTool() {
       <SEOHead
         title={tt.pageTitle}
         description="Generate AI prompts for free. No signup required for your first prompt. Create expert-level prompts for ChatGPT, Claude, Gemini, and more."
-        ogImage="/og-free-tool.jpg"
+        ogImage="/og-default.jpg"
       />
 
       <div className="min-h-[100dvh] pt-24 pb-16 bg-gradient-to-br from-indigo-50 via-white to-violet-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">

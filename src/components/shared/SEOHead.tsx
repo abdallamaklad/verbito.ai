@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 
 interface SchemaOrg {
   '@context': string;
-  '@type': string;
+  '@type'?: string;
+  '@graph'?: Record<string, unknown>[];
   [key: string]: unknown;
 }
 
@@ -37,6 +38,9 @@ export default function SEOHead({
 }: SEOHeadProps) {
   useEffect(() => {
     document.title = title;
+    const currentUrl = `${window.location.origin}${window.location.pathname}`;
+    const resolvedCanonical = canonicalUrl || currentUrl;
+    const resolvedImage = new URL(ogImage, window.location.origin).href;
 
     /* ---- Helpers ---- */
     const setMeta = (name: string, content: string) => {
@@ -71,27 +75,23 @@ export default function SEOHead({
     setProperty('og:title', title);
     setProperty('og:description', description);
     setProperty('og:type', ogType);
-    setProperty('og:image', ogImage);
-    if (ogUrl) setProperty('og:url', ogUrl);
+    setProperty('og:image', resolvedImage);
+    setProperty('og:url', ogUrl || resolvedCanonical);
 
     /* ---- Twitter Cards ---- */
-    setProperty('twitter:card', twitterCard);
-    setProperty('twitter:title', title);
-    setProperty('twitter:description', description);
-    setProperty('twitter:image', ogImage);
+    setMeta('twitter:card', twitterCard);
+    setMeta('twitter:title', title);
+    setMeta('twitter:description', description);
+    setMeta('twitter:image', resolvedImage);
 
     /* ---- Canonical URL ---- */
     let canonicalEl = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    if (canonicalUrl) {
-      if (!canonicalEl) {
-        canonicalEl = document.createElement('link');
-        canonicalEl.setAttribute('rel', 'canonical');
-        document.head.appendChild(canonicalEl);
-      }
-      canonicalEl.setAttribute('href', canonicalUrl);
-    } else if (canonicalEl) {
-      canonicalEl.remove();
+    if (!canonicalEl) {
+      canonicalEl = document.createElement('link');
+      canonicalEl.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalEl);
     }
+    canonicalEl.setAttribute('href', resolvedCanonical);
 
     /* ---- Additional Meta Tags ---- */
     additionalMeta.forEach((meta) => {

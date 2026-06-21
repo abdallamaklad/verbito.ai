@@ -11,7 +11,7 @@ export default function SEOPromptGenerator() {
       defaultOutputType="Blog Post"
       seoTitle="SEO Prompt Generator — AI for SEO & Content Optimization | Verbito.ai"
       seoDescription="Generate AI prompts for SEO keyword research, content optimization, technical SEO, and link building strategies. Free tool — no signup required."
-      ogImage="/og-seo-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={Search}
       iconColor="text-orange-600"
       gradientFrom="from-orange-100"

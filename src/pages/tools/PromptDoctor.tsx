@@ -196,7 +196,7 @@ export default function PromptDoctor() {
       <SEOHead
         title="Prompt Doctor — Fix & Improve Your AI Prompts | Verbito.ai"
         description="Paste your prompt and get instant diagnosis with specific fixes. Improve your AI prompts for ChatGPT, Claude, and Gemini with our free Prompt Doctor tool."
-        ogImage="/og-prompt-doctor.jpg"
+        ogImage="/og-default.jpg"
       />
 
       <div className="min-h-[100dvh] pt-24 pb-16 bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">

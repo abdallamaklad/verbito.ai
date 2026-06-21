@@ -11,7 +11,7 @@ export default function EmailPromptGenerator() {
       defaultOutputType="Email"
       seoTitle="Email Prompt Generator — AI Email Writing Tool | Verbito.ai"
       seoDescription="Generate AI prompts for writing sales emails, marketing campaigns, cold outreach, and customer support responses. Free tool — no signup required."
-      ogImage="/og-email-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={Mail}
       iconColor="text-sky-600"
       gradientFrom="from-sky-100"

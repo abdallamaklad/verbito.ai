@@ -11,7 +11,7 @@ export default function ResearchPromptGenerator() {
       defaultOutputType="Research Summary"
       seoTitle="Research Prompt Generator — AI for Academic Research | Verbito.ai"
       seoDescription="Generate AI prompts for academic research, literature reviews, data analysis, and hypothesis generation. Free tool for researchers and students."
-      ogImage="/og-research-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={FlaskConical}
       iconColor="text-indigo-600"
       gradientFrom="from-indigo-100"

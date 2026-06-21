@@ -17,7 +17,43 @@ Users
 import { useEffect,useState } from 'react';
 import { Link,useParams } from 'react-router-dom';
 import SEOHead from '../components/shared/SEOHead';
+import OptimizedImage from '../components/shared/OptimizedImage';
 import { articles } from '../lib/data/articles';
+
+const articleFaqs = [
+  { q: 'How do I apply these techniques to my work?', a: 'Start with one technique at a time. Pick the method that seems most relevant to your current projects and practice it for a week before adding another.' },
+  { q: 'Which AI model works best with these prompts?', a: 'Most techniques work across major models including ChatGPT, Claude, and Gemini. Any model-specific considerations are noted in the article.' },
+  { q: 'Can I share these prompts with my team?', a: 'Yes. Verbito knowledge articles can be shared with your team with credit to Verbito.ai as the source.' },
+];
+
+const toolsByCategory: Record<string, { title: string; href: string; description: string }[]> = {
+  Marketing: [
+    { title: 'Marketing Prompt Generator', href: '/tools/marketing-prompt-generator', description: 'Build campaign and content prompts.' },
+    { title: 'Email Prompt Generator', href: '/tools/email-prompt-generator', description: 'Create outreach and newsletter prompts.' },
+    { title: 'SEO Prompt Generator', href: '/tools/seo-prompt-generator', description: 'Plan search-focused content prompts.' },
+  ],
+  Development: [
+    { title: 'Coding Prompt Generator', href: '/tools/coding-prompt-generator', description: 'Structure coding and debugging requests.' },
+    { title: 'ChatGPT Prompt Generator', href: '/tools/chatgpt-prompt-generator', description: 'Create detailed ChatGPT prompts.' },
+    { title: 'Prompt Doctor', href: '/tools/prompt-doctor', description: 'Diagnose and improve an existing prompt.' },
+  ],
+  Midjourney: [
+    { title: 'Midjourney Prompt Generator', href: '/tools/midjourney-prompt-generator', description: 'Direct style, lighting, and composition.' },
+    { title: 'Image Prompt Generator', href: '/tools/image-prompt-generator', description: 'Create prompts for AI image tools.' },
+    { title: 'Video Prompt Generator', href: '/tools/video-prompt-generator', description: 'Plan scenes, motion, and visual direction.' },
+  ],
+  Students: [
+    { title: 'Student Prompt Generator', href: '/tools/student-prompt-generator', description: 'Build responsible study prompts.' },
+    { title: 'Research Prompt Generator', href: '/tools/research-prompt-generator', description: 'Structure research and synthesis prompts.' },
+    { title: 'ChatGPT Prompt Generator', href: '/tools/chatgpt-prompt-generator', description: 'Create detailed ChatGPT prompts.' },
+  ],
+};
+
+const defaultRelatedTools = [
+  { title: 'Free AI Prompt Generator', href: '/tools/free-ai-prompt-generator', description: 'Turn an idea into a structured prompt.' },
+  { title: 'Prompt Doctor', href: '/tools/prompt-doctor', description: 'Diagnose and improve an existing prompt.' },
+  { title: 'Business Prompt Generator', href: '/tools/business-prompt-generator', description: 'Build practical business prompts.' },
+];
 
 export default function Article() {
   const { slug } = useParams<{ slug: string }>();
@@ -35,6 +71,7 @@ export default function Article() {
   const related = article
     ? articles.filter((a) => a.category === article.category && a.id !== article.id).slice(0, 3)
     : [];
+  const relatedTools = article ? toolsByCategory[article.category] || defaultRelatedTools : defaultRelatedTools;
 
   // Reading progress
   useEffect(() => {
@@ -86,6 +123,11 @@ export default function Article() {
     );
   }
 
+  const publishedDate = new Date(`${article.date} 12:00:00 UTC`).toISOString().slice(0, 10);
+  const reviewedDate = article.updatedDate
+    ? new Date(`${article.updatedDate} 12:00:00 UTC`).toISOString().slice(0, 10)
+    : null;
+
   return (
     <>
       <SEOHead
@@ -96,13 +138,26 @@ export default function Article() {
         canonicalUrl={`https://verbito.ai/knowledge/${article.slug}`}
         schema={{
           '@context': 'https://schema.org',
-          '@type': 'Article',
-          headline: article.title,
-          description: article.excerpt,
-          image: `https://verbito.ai${article.image}`,
-          datePublished: new Date(article.date).toISOString().slice(0, 10),
-          author: { '@type': 'Organization', name: 'Quantara LLC' },
-          publisher: { '@type': 'Organization', name: 'Quantara LLC', url: 'https://verbito.ai' },
+          '@graph': [
+            {
+              '@type': 'Article',
+              headline: article.title,
+              description: article.excerpt,
+              image: `https://verbito.ai${article.image}`,
+              datePublished: publishedDate,
+              ...(reviewedDate ? { dateModified: reviewedDate } : {}),
+              author: { '@type': 'Organization', name: 'Quantara Editorial Team', url: 'https://verbito.ai/about' },
+              publisher: { '@type': 'Organization', name: 'Quantara LLC', url: 'https://verbito.ai' },
+            },
+            {
+              '@type': 'FAQPage',
+              mainEntity: articleFaqs.map(({ q, a }) => ({
+                '@type': 'Question',
+                name: q,
+                acceptedAnswer: { '@type': 'Answer', text: a },
+              })),
+            },
+          ],
         }}
       />
 
@@ -150,10 +205,19 @@ export default function Article() {
                 {article.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  {article.date}
+                <span className="flex items-center gap-2">
+                  <OptimizedImage src="/quantara-logo.png" alt="" width="20" height="20" className="h-5 w-5 object-contain" />
+                  By <Link to="/about" rel="author" className="font-medium text-gray-700 hover:text-violet-600 dark:text-gray-300">Quantara Editorial Team</Link>
                 </span>
+                <time dateTime={publishedDate} className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  Published {article.date}
+                </time>
+                {reviewedDate && (
+                  <time dateTime={reviewedDate} className="flex items-center gap-1">
+                    <Check className="h-4 w-4" /> Last reviewed {article.updatedDate}
+                  </time>
+                )}
                 <span className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
                   {article.readTime}
@@ -167,9 +231,12 @@ export default function Article() {
 
             {/* Hero Image */}
             <div className="aspect-[16/9] sm:aspect-[21/9] overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 mb-10">
-              <img
+              <OptimizedImage
                 src={article.image}
                 alt={article.title}
+                width="1376"
+                height="768"
+                sizes="(min-width: 1024px) 896px, 100vw"
                 className="h-full w-full object-cover"
                 fetchPriority="high"
               />
@@ -253,11 +320,7 @@ export default function Article() {
                 Frequently Asked Questions
               </h3>
               <div className="space-y-4">
-                {[
-                  { q: 'How do I apply these techniques to my work?', a: 'Start with one technique at a time. Pick the method that seems most relevant to your current projects and practice it for a week before adding another.' },
-                  { q: 'Which AI model works best with these prompts?', a: 'Most techniques work across all major models (ChatGPT, Claude, Gemini). We note any model-specific optimizations in the article.' },
-                  { q: 'Can I share these prompts with my team?', a: 'Yes! All our knowledge base content is free to share. We just ask that you credit Verbito.ai as the source.' },
-                ].map((faq, i) => (
+                {articleFaqs.map((faq, i) => (
                   <div key={i} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
                     <h4 className="font-medium text-gray-900 dark:text-white mb-2">{faq.q}</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">{faq.a}</p>
@@ -280,9 +343,12 @@ export default function Article() {
                       className="group overflow-hidden bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:shadow-card-hover transition-shadow"
                     >
                       <div className="aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                        <img
+                        <OptimizedImage
                           src={r.image}
                           alt={r.title}
+                          width="1376"
+                          height="768"
+                          sizes="(min-width: 640px) 33vw, 100vw"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                           loading="lazy"
                         />
@@ -306,6 +372,22 @@ export default function Article() {
                 </div>
               </div>
             )}
+
+            <div className="mb-10">
+              <h3 className="mb-6 font-heading text-xl font-bold text-gray-900 dark:text-white">Related Prompt Tools</h3>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {relatedTools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    to={tool.href}
+                    className="border-l-2 border-violet-500 bg-gray-50 p-4 transition-colors hover:bg-violet-50 dark:bg-gray-900 dark:hover:bg-violet-950/20"
+                  >
+                    <h4 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">{tool.title}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{tool.description}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
 
             {/* Email Capture */}
             <motion.div

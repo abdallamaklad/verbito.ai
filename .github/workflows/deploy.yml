@@ -45,6 +45,9 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || vars.VITE_SUPABASE_ANON_KEY || 'sb_publishable_5-4ua-16JitaKNARknLJUA_LjFAqy_b' }}
           VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY || vars.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_live_51TcntE2cUp9MmGxDgFZthJSC5Wqyzzj2mpRMcX4T8Grh63znIM6g9dytHKVoNZzMrzZ3FnCQXh1QPx2blLy0W96f00tNhZCHPF' }}
 
+      - name: SEO checks
+        run: npm run check:seo
+
       - name: Package static build
         run: tar -C dist -czf verbito-dist.tar.gz .
 

@@ -113,6 +113,8 @@ function CourseFaqItem({ q, a }: { q: string; a: string }) {
   return (
     <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-gray-900">
       <button
+        type="button"
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
       >
@@ -168,10 +170,29 @@ export default function Course() {
         ogImage="/og-course.jpg"
         schema={{
           '@context': 'https://schema.org',
-          '@type': 'Course',
-          name: tt.courseTitle,
-          description: tt.courseDescription,
-          provider: { '@type': 'Organization', name: 'Quantara LLC', url: 'https://verbito.ai' },
+          '@graph': [
+            {
+              '@type': 'Course',
+              name: tt.courseTitle,
+              description: tt.courseDescription,
+              url: 'https://verbito.ai/course/master-prompt-engineering',
+              provider: { '@type': 'Organization', name: 'Quantara LLC', url: 'https://verbito.ai' },
+              offers: { '@type': 'Offer', price: '197', priceCurrency: 'USD', url: 'https://verbito.ai/course/master-prompt-engineering' },
+              hasCourseInstance: {
+                '@type': 'CourseInstance',
+                courseMode: 'online',
+                courseWorkload: 'PT8H30M',
+              },
+            },
+            {
+              '@type': 'FAQPage',
+              mainEntity: faqs.map(({ q, a }) => ({
+                '@type': 'Question',
+                name: q,
+                acceptedAnswer: { '@type': 'Answer', text: a },
+              })),
+            },
+          ],
         }}
       />
 

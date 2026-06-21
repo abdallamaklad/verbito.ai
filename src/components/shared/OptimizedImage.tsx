@@ -1,0 +1,23 @@
+import type { ImgHTMLAttributes } from 'react';
+
+type OptimizedImageProps = ImgHTMLAttributes<HTMLImageElement> & {
+  src: string;
+  alt: string;
+};
+
+export default function OptimizedImage({ src, alt, sizes = '100vw', ...props }: OptimizedImageProps) {
+  const modernSource = (extension: 'avif' | 'webp') => src.replace(/\.(?:jpe?g|png)$/i, `.${extension}`);
+  const responsiveSource = (extension: 'avif' | 'webp') => {
+    if (!/\.jpe?g$/i.test(src)) return modernSource(extension);
+    const base = src.replace(/\.jpe?g$/i, '');
+    return `${base}-640.${extension} 640w, ${base}-960.${extension} 960w, ${base}.${extension} 1376w`;
+  };
+
+  return (
+    <picture className="contents">
+      <source srcSet={responsiveSource('avif')} sizes={sizes} type="image/avif" />
+      <source srcSet={responsiveSource('webp')} sizes={sizes} type="image/webp" />
+      <img src={src} alt={alt} sizes={sizes} {...props} />
+    </picture>
+  );
+}

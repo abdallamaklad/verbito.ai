@@ -11,7 +11,7 @@ export default function MidjourneyPromptGenerator() {
       defaultOutputType="Image Prompt"
       seoTitle="Midjourney Prompt Generator — AI Art Prompts | Verbito.ai"
       seoDescription="Generate optimized Midjourney prompts for stunning AI art. Create photorealistic, artistic, and stylized images with our free prompt generator."
-      ogImage="/og-midjourney-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={Palette}
       iconColor="text-fuchsia-600"
       gradientFrom="from-fuchsia-100"

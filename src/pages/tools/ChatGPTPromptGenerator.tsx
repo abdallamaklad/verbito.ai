@@ -11,7 +11,7 @@ export default function ChatGPTPromptGenerator() {
       defaultOutputType="Blog Post"
       seoTitle="ChatGPT Prompt Generator — Free AI Prompt Tool | Verbito.ai"
       seoDescription="Generate optimized ChatGPT prompts for free. Get better AI responses with structured prompts tailored for GPT-4 and GPT-4o."
-      ogImage="/og-chatgpt-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={MessageSquare}
       iconColor="text-emerald-600"
       gradientFrom="from-emerald-100"

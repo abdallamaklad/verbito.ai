@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import {
 ArrowLeftRight,
 ArrowRight,
@@ -28,13 +27,26 @@ Video,
 X,
 Zap
 } from 'lucide-react';
-import { useEffect,useRef,useState } from 'react';
+import { lazy,useEffect,useRef,useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import SEOHead from '../components/shared/SEOHead';
-import UpgradeModal from '../components/shared/UpgradeModal';
+import OptimizedImage from '../components/shared/OptimizedImage';
+import {
+  StaticMotionAnchor,
+  StaticMotionDiv,
+  StaticMotionParagraph,
+} from '../components/shared/StaticMotion';
+
+const motion = {
+  a: StaticMotionAnchor,
+  div: StaticMotionDiv,
+  p: StaticMotionParagraph,
+};
 import { usePageTranslations } from '../hooks/useTranslation';
 import { homepage as homepageTranslations } from '../lib/translations/homepage';
+
+const UpgradeModal = lazy(() => import('../components/shared/UpgradeModal'));
 
 /* ------------------------------------------------------------------ */
 /*  ANIMATION VARIANTS                                                 */
@@ -48,6 +60,17 @@ const fadeUp = {
     transition: { delay: i * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   }),
 };
+
+const homeFaqs = [
+  { q: 'What is Verbito.ai?', a: 'Verbito.ai is an AI-powered prompt generator that transforms your rough ideas into expertly crafted prompts for ChatGPT, Claude, Gemini, Midjourney, and other AI tools. We use advanced prompt engineering techniques like role assignment, context framing, and structured output formatting to ensure you get the best possible results.' },
+  { q: 'How many free prompts do I get?', a: 'Free accounts can generate up to 2 prompts per day. No credit card is required to sign up. Upgrade to Starter ($12/mo) for 300 prompts/month, Pro ($29/mo) for 2,000/month, or Unlimited ($79/mo) for unlimited generations.' },
+  { q: 'Do I need to know prompt engineering?', a: 'Not at all. Verbito is designed for both beginners and experts. Just describe what you want in plain language, and our system handles all the technical prompt engineering for you. If you want to learn, our course teaches you the fundamentals.' },
+  { q: 'Which AI models does Verbito support?', a: 'We optimize prompts for ChatGPT, Claude, Google Gemini, Midjourney, DALL-E, Stable Diffusion, and general-purpose AI models. You select your target model when generating, and we tailor the prompt structure accordingly.' },
+  { q: 'Can I save and organize my prompts?', a: 'Yes. Starter, Pro, and Unlimited plans include prompt saving, history, and collections. You can organize prompts for easier access, while free users can copy generated prompts.' },
+  { q: 'Is there a prompt engineering course?', a: 'Yes. Master Prompt Engineering is a 10-module program with 50 lessons, practical projects, and a certificate of completion. It is a one-time purchase with lifetime access.' },
+  { q: 'What is the Prompt Score?', a: 'Every generated prompt receives quality feedback across clarity, context, specificity, constraints, output format, and reusability. This helps you understand and improve your prompting over time.' },
+  { q: 'How do I cancel my subscription?', a: 'You can cancel from your account settings. After canceling, access continues until the end of the current billing period. Review the refund policy for eligibility details.' },
+];
 
 /* ------------------------------------------------------------------ */
 /*  PARTICLE FIELD                                                     */
@@ -168,6 +191,8 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   return (
     <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
       <button
+        type="button"
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
       >
@@ -234,21 +259,64 @@ export default function Home() {
   return (
     <>
       <SEOHead
-        title="Verbito.ai — Turn Rough Ideas Into Expert-Level AI Prompts"
-        description="Generate powerful prompts for ChatGPT, Claude, Gemini, and Midjourney. Verbito helps you get better AI results without becoming a prompt engineer."
+        title="Verbito - Free AI Prompt Generator for ChatGPT, Claude & More"
+        description="Create expert AI prompts for ChatGPT, Claude, Gemini and Midjourney in seconds. Get 2 free prompt generations daily. No credit card required."
         canonicalUrl="https://verbito.ai/"
         ogImage="/og-default.jpg"
         schema={{
           '@context': 'https://schema.org',
-          '@type': 'SoftwareApplication',
-          name: 'Verbito.ai',
-          description: 'AI prompt generator that turns rough ideas into expert-level prompts',
-          applicationCategory: 'ProductivityApplication',
-          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          '@graph': [
+            {
+              '@type': 'WebSite',
+              '@id': 'https://verbito.ai/#website',
+              url: 'https://verbito.ai/',
+              name: 'Verbito - Free AI Prompt Generator',
+              publisher: { '@id': 'https://verbito.ai/#organization' },
+              inLanguage: 'en-US',
+            },
+            {
+              '@type': 'Organization',
+              '@id': 'https://verbito.ai/#organization',
+              name: 'Quantara LLC',
+              alternateName: 'Verbito',
+              url: 'https://verbito.ai/',
+              email: 'verbito.ai@wearequantara.com',
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'Sharjah Media City',
+                addressLocality: 'Sharjah',
+                addressCountry: 'AE',
+              },
+            },
+            {
+              '@type': 'SoftwareApplication',
+              '@id': 'https://verbito.ai/#product',
+              name: 'Verbito AI Prompt Generator',
+              applicationCategory: 'ProductivityApplication',
+              operatingSystem: 'Web',
+              description: 'AI prompt generator for ChatGPT, Claude, Gemini, Midjourney, and more.',
+              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+              featureList: [
+                'Structured expert prompts',
+                'Model-specific prompt optimization',
+                'Prompt quality feedback',
+                'Reusable prompt library',
+              ],
+            },
+            {
+              '@type': 'FAQPage',
+              '@id': 'https://verbito.ai/#faq',
+              mainEntity: homeFaqs.map(({ q, a }) => ({
+                '@type': 'Question',
+                name: q,
+                acceptedAnswer: { '@type': 'Answer', text: a },
+              })),
+            },
+          ],
         }}
       />
 
-      <UpgradeModal isOpen={showUpgrade} onClose={() => setShowUpgrade(false)} />
+      {showUpgrade && <UpgradeModal isOpen onClose={() => setShowUpgrade(false)} />}
 
       {/* ========== 1. HERO ========== */}
       <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-violet-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
@@ -822,11 +890,12 @@ Tone: Professional, aspirational, urgent without being aggressive
               className="relative"
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img
+                <OptimizedImage
                   src="/course-preview.jpg"
                   alt="Master Prompt Engineering Course"
                   width="1376"
                   height="768"
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   loading="lazy"
                   className="w-full h-auto object-cover"
                 />
@@ -876,9 +945,12 @@ Tone: Professional, aspirational, urgent without being aggressive
               >
                 <Link to={`/knowledge/${article.slug}`} className="group block">
                   <div className="relative rounded-xl overflow-hidden mb-4">
-                    <img
+                    <OptimizedImage
                       src={article.image}
                       alt={article.title}
+                      width="1376"
+                      height="768"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       loading="lazy"
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -1092,16 +1164,7 @@ Tone: Professional, aspirational, urgent without being aggressive
           </motion.div>
 
           <div className="space-y-4">
-            {[
-              { q: 'What is Verbito.ai?', a: 'Verbito.ai is an AI-powered prompt generator that transforms your rough ideas into expertly crafted prompts for ChatGPT, Claude, Gemini, Midjourney, and other AI tools. We use advanced prompt engineering techniques like role assignment, context framing, and structured output formatting to ensure you get the best possible results.' },
-              { q: 'How many free prompts do I get?', a: 'Free accounts can generate up to 2 prompts per day. No credit card is required to sign up. Upgrade to Starter ($12/mo) for 300 prompts/month, Pro ($29/mo) for 2,000/month, or Unlimited ($79/mo) for unlimited generations.' },
-              { q: 'Do I need to know prompt engineering?', a: 'Not at all. Verbito is designed for both beginners and experts. Just describe what you want in plain language, and our system handles all the technical prompt engineering for you. If you want to learn, our course teaches you the fundamentals.' },
-              { q: 'Which AI models does Verbito support?', a: 'We optimize prompts for ChatGPT (GPT-4o), GPT-4.1, Claude (3.5 Sonnet), Google Gemini, Midjourney, DALL-E, Stable Diffusion, and general-purpose AI models. You select your target model when generating, and we tailor the prompt structure accordingly.' },
-              { q: 'Can I save and organize my prompts?', a: 'Yes! Starter, Pro, and Unlimited plans include prompt saving, history, and collections. You can organize your prompts with folders and tags for easy access. Free users can copy prompts to the clipboard.' },
-              { q: 'Is there a prompt engineering course?', a: 'Yes! Our "Master Prompt Engineering" course is a comprehensive 10-module program with 50 lessons, real-world projects, and a certificate of completion. It is a one-time purchase of $197 with lifetime access.' },
-              { q: 'What is the Prompt Score?', a: 'Every generated prompt receives a quality score out of 100, with a detailed breakdown across 6 dimensions: clarity, context, specificity, constraints, output format, and reusability. This helps you understand and improve your prompting over time.' },
-              { q: 'How do I cancel my subscription?', a: 'You can cancel anytime from your account settings. After canceling, you will continue to have access until the end of your current billing period. We also offer a 14-day money-back guarantee on all paid plans.' },
-            ].map((faq, i) => (
+            {homeFaqs.map((faq, i) => (
               <motion.div
                 key={i}
                 variants={fadeUp}

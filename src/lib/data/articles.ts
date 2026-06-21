@@ -6,6 +6,7 @@ export interface Article {
   category: string;
   readTime: string;
   date: string;
+  updatedDate?: string;
   image: string;
   content: string;
 }

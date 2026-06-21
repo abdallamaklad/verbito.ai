@@ -171,7 +171,21 @@ export default function ToolPageLayout({
 
   return (
     <>
-      <SEOHead title={seoTitle} description={seoDescription} ogImage={ogImage} />
+      <SEOHead
+        title={seoTitle}
+        description={seoDescription}
+        ogImage={ogImage}
+        canonicalUrl={`https://verbito.ai/tools/${slug}`}
+        schema={faqs.length > 0 ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map(({ question, answer }) => ({
+            '@type': 'Question',
+            name: question,
+            acceptedAnswer: { '@type': 'Answer', text: answer },
+          })),
+        } : undefined}
+      />
 
       <div className="min-h-[100dvh] pt-24 pb-16 bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">

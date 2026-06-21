@@ -11,7 +11,7 @@ export default function ImagePromptGenerator() {
       defaultOutputType="Image Prompt"
       seoTitle="AI Image Prompt Generator — DALL-E, Stable Diffusion | Verbito.ai"
       seoDescription="Generate optimized AI image prompts for DALL-E 3, Stable Diffusion, and other image generators. Create stunning visuals with structured prompts."
-      ogImage="/og-image-prompts.jpg"
+      ogImage="/og-default.jpg"
       icon={Image}
       iconColor="text-teal-600"
       gradientFrom="from-teal-100"
