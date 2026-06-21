@@ -51,7 +51,7 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
-export async function signInWithOAuth(provider: 'google' | 'github') {
+export async function signInWithOAuth(provider: 'google') {
   if (!supabase) throw new Error('Supabase not configured');
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
