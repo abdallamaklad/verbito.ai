@@ -3,6 +3,8 @@ import type { LanguageCode } from '../languages';
 export const knowledge: Record<LanguageCode, Record<string, string>> = {
   en: {
     hubTitle: 'Knowledge Hub',
+    heroTitle: 'Master AI With ',
+    heroTitleGradient: 'Practical Prompt Guides',
     hubSubtitle: 'Explore guides, tutorials, and best practices for prompt engineering.',
     searchPlaceholder: 'Search articles...',
     allCategories: 'All Categories',
@@ -21,6 +23,8 @@ export const knowledge: Record<LanguageCode, Record<string, string>> = {
   },
   es: {
     hubTitle: 'Centro de Conocimiento',
+    heroTitle: 'Domina la IA con ',
+    heroTitleGradient: 'gu\u00EDas pr\u00E1cticas de prompts',
     hubSubtitle: 'Explora gu\u00EDas, tutoriales y mejores pr\u00E1cticas para la ingenier\u00EDa de prompts.',
     searchPlaceholder: 'Buscar art\u00EDculos...',
     allCategories: 'Todas las Categor\u00EDas',
@@ -39,6 +43,8 @@ export const knowledge: Record<LanguageCode, Record<string, string>> = {
   },
   fr: {
     hubTitle: 'Centre de Connaissances',
+    heroTitle: 'Ma\u00EEtrisez l\u2019IA avec des ',
+    heroTitleGradient: 'guides pratiques de prompts',
     hubSubtitle: 'Explorez les guides, tutoriels et meilleures pratiques du prompt engineering.',
     searchPlaceholder: 'Rechercher des articles...',
     allCategories: 'Toutes les Cat\u00E9gories',
@@ -57,6 +63,8 @@ export const knowledge: Record<LanguageCode, Record<string, string>> = {
   },
   de: {
     hubTitle: 'Wissenszentrum',
+    heroTitle: 'KI meistern mit ',
+    heroTitleGradient: 'praktischen Prompt-Leitf\u00E4den',
     hubSubtitle: 'Erkunde Anleitungen, Tutorials und Best Practices f\u00FCr Prompt Engineering.',
     searchPlaceholder: 'Artikel suchen...',
     allCategories: 'Alle Kategorien',
@@ -75,6 +83,8 @@ export const knowledge: Record<LanguageCode, Record<string, string>> = {
   },
   ar: {
     hubTitle: '\u0648\u0643\u0627\u0644\u0629 \u0627\u0644\u0645\u0639\u0631\u0641\u0629',
+    heroTitle: '\u0623\u062a\u0642\u0646 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0645\u0639 ',
+    heroTitleGradient: '\u0623\u062f\u0644\u0629 \u0639\u0645\u0644\u064a\u0629 \u0644\u0643\u062a\u0627\u0628\u0629 \u0627\u0644\u0645\u0637\u0627\u0644\u0628\u0627\u062a',
     hubSubtitle: '\u0627\u0633\u062A\u0643\u0634\u0641 \u0627\u0644\u0623\u062F\u0644\u0651\u0629 \u0648\u0627\u0644\u062F\u0648\u0631\u0627\u062A \u0627\u0644\u062A\u0639\u0644\u064A\u0645\u064A\u0629 \u0648\u0623\u0641\u0636\u0644 \u0627\u0644\u0645\u0645\u0627\u0631\u0633\u0627\u062A \u0644\u0647\u0646\u062F\u0633\u0629 \u0627\u0644\u062A\u0644\u0645\u064A\u062D.',
     searchPlaceholder: '\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0627\u0644\u0645\u0642\u0627\u0644\u0627\u062A...',
     allCategories: '\u062C\u0645\u064A\u0639 \u0627\u0644\u0641\u0626\u0627\u062A',

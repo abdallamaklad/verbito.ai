@@ -25,8 +25,8 @@ import SEOHead from '../components/shared/SEOHead';
 import OptimizedImage from '../components/shared/OptimizedImage';
 import { articles } from '../lib/data/articles';
 
-const categories = [
-  kt.en.allCategories, 'Fundamentals', 'AI Tools', 'Advanced', 'Marketing', 'Midjourney',
+const articleCategories = [
+  'Fundamentals', 'AI Tools', 'Advanced', 'Marketing', 'Midjourney',
   'Business', 'Development', 'Students', 'SEO', 'Email Writing', 'Content Creation', 'Automation'
 ];
 
@@ -58,6 +58,7 @@ export default function Knowledge() {
   const [activeCategory, setActiveCategory] = useState(tt.allCategories);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const categories = [tt.allCategories, ...articleCategories];
 
   const featured = articles[0];
   const rest = articles.slice(1);
@@ -139,7 +140,7 @@ export default function Knowledge() {
                     : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
               >
-                {categoryIcons[cat]}
+                {cat === tt.allCategories ? <BookOpen className="w-4 h-4" /> : categoryIcons[cat]}
                 {cat}
               </button>
             ))}
