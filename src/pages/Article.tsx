@@ -55,6 +55,26 @@ const defaultRelatedTools = [
   { title: 'Business Prompt Generator', href: '/tools/business-prompt-generator', description: 'Build practical business prompts.' },
 ];
 
+function prepareArticleContent(content: string) {
+  const ids = new Map<string, number>();
+  const toc: { id: string; label: string }[] = [];
+  const html = content.replace(/<h2>([\s\S]*?)<\/h2>/g, (_, heading: string) => {
+    const label = heading.replace(/<[^>]+>/g, '').replaceAll('&amp;', '&').trim();
+    const base = label
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-') || 'section';
+    const count = ids.get(base) || 0;
+    ids.set(base, count + 1);
+    const id = count ? `${base}-${count + 1}` : base;
+    toc.push({ id, label });
+    return `<h2 id="${id}">${heading}</h2>`;
+  });
+
+  return { html, toc };
+}
+
 export default function Article() {
   const { slug } = useParams<{ slug: string }>();
   const [progress, setProgress] = useState(0);
@@ -72,6 +92,7 @@ export default function Article() {
     ? articles.filter((a) => a.category === article.category && a.id !== article.id).slice(0, 3)
     : [];
   const relatedTools = article ? toolsByCategory[article.category] || defaultRelatedTools : defaultRelatedTools;
+  const preparedArticle = article ? prepareArticleContent(article.content) : { html: '', toc: [] };
 
   // Reading progress
   useEffect(() => {
@@ -196,13 +217,13 @@ export default function Article() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <header className="mb-10">
+            <header className="mb-8 sm:mb-10">
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span className="text-xs font-medium bg-violet-100 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400 px-3 py-1 rounded-full">
                   {article.category}
                 </span>
               </div>
-              <h1 className="font-heading font-bold text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4 leading-tight">
+              <h1 className="mb-5 max-w-3xl font-heading text-[2.125rem] font-bold leading-[1.12] text-gray-900 sm:text-5xl dark:text-white">
                 {article.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
@@ -243,10 +264,28 @@ export default function Article() {
               />
             </div>
 
+            {preparedArticle.toc.length > 2 && (
+              <nav aria-label="Article contents" className="mx-auto mb-12 max-w-[720px] border-y border-gray-200 py-6 dark:border-gray-800">
+                <p className="mb-3 font-heading text-sm font-bold uppercase text-gray-900 dark:text-white">
+                  In this article
+                </p>
+                <ol className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
+                  {preparedArticle.toc.map((item, index) => (
+                    <li key={item.id} className="flex min-w-0 gap-2">
+                      <span className="shrink-0 text-gray-400">{String(index + 1).padStart(2, '0')}</span>
+                      <a href={`#${item.id}`} className="text-gray-600 hover:text-violet-600 dark:text-gray-300 dark:hover:text-violet-400">
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )}
+
             {/* Article Content */}
             <div
-              className="prose dark:prose-invert prose-lg max-w-none mb-10"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              className="article-content mx-auto mb-12 max-w-[720px]"
+              dangerouslySetInnerHTML={{ __html: preparedArticle.html }}
             />
 
             {/* Inline CTA */}

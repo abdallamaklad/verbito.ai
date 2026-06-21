@@ -5,7 +5,11 @@ const siteUrl = 'https://verbito.ai';
 const distDir = path.resolve('dist');
 const shell = await readFile(path.join(distDir, 'index.html'), 'utf8');
 const sitemap = await readFile(path.join(distDir, 'sitemap.xml'), 'utf8');
-const articleSource = await readFile(path.resolve('src/lib/data/articles.ts'), 'utf8');
+const supplementalArticleSource = await readFile(path.resolve('src/lib/data/supplementalArticles.ts'), 'utf8');
+const articleSource = [
+  await readFile(path.resolve('src/lib/data/articles.ts'), 'utf8'),
+  supplementalArticleSource,
+].join('\n');
 
 const page = (pathname, title, description, heading = title, image = '/og-default.jpg') => ({
   pathname, title, description, heading, image,
@@ -16,22 +20,27 @@ const articlePages = [
   page('/knowledge/what-is-prompt-engineering-beginners-guide', "What Is Prompt Engineering? A Complete Beginner's Guide for 2026", 'Learn what prompt engineering is, why it matters, and how to get better results from ChatGPT, Claude, and other AI tools.', undefined, '/blog-featured-1.jpg'),
   page('/knowledge/chatgpt-vs-claude-vs-gemini-2026', 'ChatGPT vs Claude vs Gemini: Which AI Model Should You Use in 2026?', 'Compare the strengths, weaknesses, and best use cases of ChatGPT, Claude, and Gemini.', undefined, '/blog-featured-2.jpg'),
   page('/knowledge/10-prompt-engineering-techniques-that-actually-work', '10 Prompt Engineering Techniques That Actually Work', 'Use practical prompt engineering techniques to improve AI output quality and consistency.', undefined, '/blog-featured-3.jpg'),
-  page('/knowledge/how-to-write-ai-prompts-for-marketing', 'How to Write AI Prompts for Marketing That Convert', 'Learn how to create AI prompts for marketing copy, campaigns, and content strategy.', undefined, '/blog-featured-1.jpg'),
-  page('/knowledge/ai-prompts-for-developers-coding-guide', 'AI Prompts for Developers: Write Better Code Faster', 'Use AI prompts for coding, debugging, code review, testing, and architecture decisions.', undefined, '/blog-featured-2.jpg'),
-  page('/knowledge/midjourney-prompts-master-guide', 'The Master Guide to Midjourney Prompts in 2026', 'Create more controllable AI images with practical Midjourney prompt techniques and examples.', undefined, '/blog-featured-3.jpg'),
-  page('/knowledge/prompt-engineering-for-business-owners', 'Prompt Engineering for Business Owners: A Practical Guide', 'Use AI prompts to streamline operations, improve customer service, and support business growth.', undefined, '/blog-featured-1.jpg'),
-  page('/knowledge/ai-prompts-for-students-research', 'AI Prompts for Students: Study Smarter, Not Harder', 'Use AI responsibly to support research, revision, writing, and understanding complex subjects.', undefined, '/blog-featured-2.jpg'),
-  page('/knowledge/advanced-prompt-chaining-techniques', 'Advanced Prompt Chaining: Build Complex AI Workflows', 'Learn how to connect prompts into repeatable AI workflows for complex tasks.', undefined, '/blog-featured-3.jpg'),
-  page('/knowledge/seo-optimization-with-ai-prompts', 'SEO Optimization with AI Prompts: Rank Higher in 2026', 'Use AI prompts to support keyword research, content planning, and search optimization.', undefined, '/blog-featured-1.jpg'),
-  page('/knowledge/email-writing-ai-prompts-that-work', 'Email Writing AI Prompts That Get Responses', 'Create better AI prompts for outreach, follow-ups, newsletters, and sales emails.', undefined, '/blog-featured-2.jpg'),
-  page('/knowledge/creating-ai-personas-for-better-outputs', 'Creating AI Personas for Better Outputs', 'Design useful AI personas that improve the relevance, tone, and consistency of generated content.', undefined, '/blog-featured-3.jpg'),
-  page('/knowledge/ai-for-content-creation-workflow', 'Building an AI-Powered Content Creation Workflow', 'Build a practical content workflow supported by structured AI prompts.', undefined, '/blog-featured-1.jpg'),
-  page('/knowledge/automating-tasks-with-ai-prompts', 'Automating Repetitive Tasks with AI Prompts', 'Use AI prompts to make routine business tasks faster and more repeatable.', undefined, '/blog-featured-2.jpg'),
-  page('/knowledge/the-future-of-prompt-engineering', 'The Future of Prompt Engineering: 2026 and Beyond', 'Explore the trends shaping how people structure instructions and work with AI systems.', undefined, '/blog-featured-3.jpg'),
+  page('/knowledge/how-to-write-ai-prompts-for-marketing', 'How to Write AI Prompts for Marketing That Convert', 'Learn how to write AI marketing prompts for research, positioning, campaigns, landing pages, ads, and conversion-focused content without generic output.', undefined, '/blog-featured-1.jpg'),
+  page('/knowledge/ai-prompts-for-developers-coding-guide', 'AI Prompts for Developers: Write Better Code Faster', 'Use structured AI coding prompts for implementation, debugging, refactoring, tests, reviews, and architecture while keeping engineers in control of quality.', undefined, '/blog-featured-2.jpg'),
+  page('/knowledge/midjourney-prompts-master-guide', 'The Master Guide to Midjourney Prompts in 2026', 'Master Midjourney prompts with a clear visual framework, current parameters, image and style references, iteration methods, and practical prompt examples.', undefined, '/blog-featured-3.jpg'),
+  page('/knowledge/prompt-engineering-for-business-owners', 'Prompt Engineering for Business Owners: A Practical Guide', 'A practical prompt engineering guide for business owners covering safe use cases, repeatable templates, quality checks, team adoption, and measurable value.', undefined, '/blog-featured-1.jpg'),
+  page('/knowledge/ai-prompts-for-students-research', 'AI Prompts for Students: Study Smarter, Not Harder', 'Use responsible AI prompts for studying, research, revision, feedback, and exam preparation while protecting academic integrity and independent thinking.', undefined, '/blog-featured-2.jpg'),
+  page('/knowledge/advanced-prompt-chaining-techniques', 'Advanced Prompt Chaining: Build Complex AI Workflows', 'Learn prompt chaining patterns for complex AI workflows, including structured handoffs, validation, retries, state, evaluation, and production safeguards.', undefined, '/blog-featured-3.jpg'),
+  page('/knowledge/seo-optimization-with-ai-prompts', 'SEO Optimization With AI Prompts: A People-First Guide for 2026', 'Use AI prompts for SEO research, briefs, on-page improvements, internal links, and content refreshes while protecting accuracy and people-first quality.', undefined, '/blog-featured-1.jpg'),
+  page('/knowledge/email-writing-ai-prompts-that-work', 'Email Writing AI Prompts That Actually Get Responses', 'Write clearer AI-assisted emails for outreach, follow-ups, customer service, newsletters, and internal communication with practical prompts and review rules.', undefined, '/blog-featured-2.jpg'),
+  page('/knowledge/creating-ai-personas-for-better-outputs', 'Creating AI Personas for Dramatically Better Outputs', 'Create practical AI personas with expertise, audience, goals, boundaries, evidence rules, and evaluation criteria instead of vague role-playing instructions.', undefined, '/blog-featured-3.jpg'),
+  page('/knowledge/ai-for-content-creation-workflow', 'Building an AI-Powered Content Creation Workflow', 'Build a reliable AI content workflow for research, briefs, drafting, editing, fact-checking, approval, repurposing, and performance-driven improvement.', undefined, '/blog-featured-1.jpg'),
+  page('/knowledge/automating-tasks-with-ai-prompts', 'Automating Repetitive Tasks With AI Prompts', 'Learn how to automate repetitive work with AI prompts using task selection, structured inputs, validation, human approval, error handling, and monitoring.', undefined, '/blog-featured-2.jpg'),
+  page('/knowledge/the-future-of-prompt-engineering', 'The Future of Prompt Engineering: Trends for 2026 and Beyond', 'Explore how prompt engineering is evolving into context design, reusable prompt systems, evaluations, multimodal workflows, agents, and governance.', undefined, '/blog-featured-3.jpg'),
 ];
 
 const articleDates = new Map(
   [...articleSource.matchAll(/slug: '([^']+)'[\s\S]*?date: '([^']+)'/g)]
+    .map(([, slug, date]) => [`/knowledge/${slug}`, new Date(`${date} 12:00:00 UTC`).toISOString().slice(0, 10)]),
+);
+
+const articleUpdatedDates = new Map(
+  [...supplementalArticleSource.matchAll(/slug: '([^']+)'[\s\S]*?updatedDate: '([^']+)'/g)]
     .map(([, slug, date]) => [`/knowledge/${slug}`, new Date(`${date} 12:00:00 UTC`).toISOString().slice(0, 10)]),
 );
 
@@ -122,6 +131,7 @@ const renderPage = (entry) => {
       image,
       author: { '@type': 'Organization', name: 'Quantara Editorial Team', url: `${siteUrl}/about` },
       datePublished: articleDates.get(entry.pathname),
+      ...(articleUpdatedDates.has(entry.pathname) ? { dateModified: articleUpdatedDates.get(entry.pathname) } : {}),
     } : {}),
     ...(schemaType === 'Course' ? {
       provider: { '@type': 'Organization', name: 'Quantara LLC', url: siteUrl },

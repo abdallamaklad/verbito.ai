@@ -6,6 +6,7 @@ import {
 ArrowRight,
 BarChart3,
 BookOpen,
+Calendar,
 Clock,
 Code2,
 Lightbulb,
@@ -26,7 +27,7 @@ import { articles } from '../lib/data/articles';
 
 const categories = [
   kt.en.allCategories, 'Fundamentals', 'AI Tools', 'Advanced', 'Marketing', 'Midjourney',
-  'Productivity', 'Business', 'Coding', 'Education', 'Research', 'Case Studies'
+  'Business', 'Development', 'Students', 'SEO', 'Email Writing', 'Content Creation', 'Automation'
 ];
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -38,6 +39,12 @@ const categoryIcons: Record<string, React.ReactNode> = {
   'Midjourney': <Palette className="w-4 h-4" />,
   'Productivity': <BarChart3 className="w-4 h-4" />,
   'Business': <Users className="w-4 h-4" />,
+  'Development': <Code2 className="w-4 h-4" />,
+  'Students': <BookOpen className="w-4 h-4" />,
+  'SEO': <Search className="w-4 h-4" />,
+  'Email Writing': <Mail className="w-4 h-4" />,
+  'Content Creation': <Palette className="w-4 h-4" />,
+  'Automation': <Zap className="w-4 h-4" />,
   'Coding': <Code2 className="w-4 h-4" />,
   'Education': <BookOpen className="w-4 h-4" />,
   'Research': <Search className="w-4 h-4" />,
@@ -55,7 +62,8 @@ export default function Knowledge() {
   const featured = articles[0];
   const rest = articles.slice(1);
 
-  const filtered = rest.filter((a) => {
+  const visibleArticles = search || activeCategory !== tt.allCategories ? articles : rest;
+  const filtered = visibleArticles.filter((a) => {
     const matchSearch = !search || a.title.toLowerCase().includes(search.toLowerCase()) || a.excerpt.toLowerCase().includes(search.toLowerCase());
     const matchCategory = activeCategory === tt.allCategories || a.category === activeCategory;
     return matchSearch && matchCategory;
@@ -120,12 +128,12 @@ export default function Knowledge() {
           </motion.div>
 
           {/* Category Pills */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
+          <div className="-mx-4 mb-10 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0 lg:justify-center">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`inline-flex shrink-0 items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   activeCategory === cat
                     ? 'bg-violet-600 text-white'
                     : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800'
@@ -160,13 +168,17 @@ export default function Knowledge() {
                     />
                   </div>
                   <div className="p-8 flex flex-col justify-center">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="mb-3 flex flex-wrap items-center gap-3">
                       <span className="text-xs font-medium bg-violet-100 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400 px-3 py-1 rounded-full">
                         {featured.category}
                       </span>
                       <span className="text-xs text-gray-500 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {featured.readTime}
+                      </span>
+                      <span className="flex items-center gap-1 text-xs text-gray-500">
+                        <Calendar className="h-3 w-3" />
+                        {featured.updatedDate || featured.date}
                       </span>
                     </div>
                     <h2 className="font-heading font-bold text-2xl text-gray-900 dark:text-white mb-3 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
@@ -216,8 +228,8 @@ export default function Knowledge() {
                         loading="lazy"
                       />
                     </div>
-                    <div className="p-5">
-                      <div className="flex items-center gap-2 mb-3">
+                    <div className="flex min-h-[245px] flex-col p-6">
+                      <div className="mb-3 flex flex-wrap items-center gap-2">
                         <span className="text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-1 rounded-full">
                           {article.category}
                         </span>
@@ -226,14 +238,19 @@ export default function Knowledge() {
                           {article.readTime}
                         </span>
                       </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors line-clamp-2">
+                      <h3 className="mb-3 line-clamp-3 font-heading text-lg font-bold leading-snug text-gray-900 transition-colors group-hover:text-violet-600 dark:text-white dark:group-hover:text-violet-400">
                         {article.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                      <p className="line-clamp-3 text-[0.9375rem] leading-6 text-gray-600 dark:text-gray-400">
                         {article.excerpt}
                       </p>
-                      <div className="flex items-center gap-2 mt-4 text-sm text-violet-600 font-medium">
-                        {ct.readMore} <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      <div className="mt-auto flex items-center justify-between gap-3 border-t border-gray-100 pt-4 text-xs dark:border-gray-800">
+                        <span className="flex items-center gap-1.5 text-gray-500">
+                          <Calendar className="h-3.5 w-3.5" /> {article.updatedDate || article.date}
+                        </span>
+                        <span className="flex items-center gap-1.5 font-medium text-violet-600">
+                          {ct.readMore} <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                        </span>
                       </div>
                     </div>
                   </Link>
