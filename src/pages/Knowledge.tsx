@@ -160,7 +160,8 @@ export default function Knowledge() {
                   <div className="aspect-video md:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
                     <OptimizedImage
                       src={featured.image}
-                      alt={featured.title}
+                      alt={featured.imageAlt || featured.title}
+                      formats={featured.imageFormats}
                       width="1376"
                       height="768"
                       sizes="(min-width: 768px) 50vw, 100vw"
@@ -221,7 +222,8 @@ export default function Knowledge() {
                     <div className="aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <OptimizedImage
                         src={article.image}
-                        alt={article.title}
+                        alt={article.imageAlt || article.title}
+                        formats={article.imageFormats}
                         width="1376"
                         height="768"
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

@@ -6,9 +6,11 @@ const distDir = path.resolve('dist');
 const shell = await readFile(path.join(distDir, 'index.html'), 'utf8');
 const sitemap = await readFile(path.join(distDir, 'sitemap.xml'), 'utf8');
 const supplementalArticleSource = await readFile(path.resolve('src/lib/data/supplementalArticles.ts'), 'utf8');
+const remainingArticleSource = await readFile(path.resolve('src/lib/data/remainingJuneArticles.ts'), 'utf8');
 const articleSource = [
   await readFile(path.resolve('src/lib/data/articles.ts'), 'utf8'),
   supplementalArticleSource,
+  remainingArticleSource,
 ].join('\n');
 
 const page = (pathname, title, description, heading = title, image = '/og-default.jpg') => ({
@@ -32,6 +34,15 @@ const articlePages = [
   page('/knowledge/ai-for-content-creation-workflow', 'Building an AI-Powered Content Creation Workflow', 'Build a reliable AI content workflow for research, briefs, drafting, editing, fact-checking, approval, repurposing, and performance-driven improvement.', undefined, '/blog-featured-1.jpg'),
   page('/knowledge/automating-tasks-with-ai-prompts', 'Automating Repetitive Tasks With AI Prompts', 'Learn how to automate repetitive work with AI prompts using task selection, structured inputs, validation, human approval, error handling, and monitoring.', undefined, '/blog-featured-2.jpg'),
   page('/knowledge/the-future-of-prompt-engineering', 'The Future of Prompt Engineering: Trends for 2026 and Beyond', 'Explore how prompt engineering is evolving into context design, reusable prompt systems, evaluations, multimodal workflows, agents, and governance.', undefined, '/blog-featured-3.jpg'),
+  page('/knowledge/when-is-claude-fable-5-coming-back', 'When Is Claude Fable 5 Coming Back? What We Know', 'Claude Fable 5 launched and was then disabled after a US export-control directive. Here is the verified timeline, current status, and practical alternatives.', undefined, '/when-is-claude-fable-5-coming-back.jpg'),
+  page('/knowledge/future-of-ai-usage-five-trends-2026', 'The Future of AI Usage: 5 Trends Reshaping Work in 2026', 'Five evidence-based AI trends are changing work in 2026: proactive agents, open models, multimodality, value-based pricing, and stronger governance.', undefined, '/future-ai-usage-five-trends.jpg'),
+  page('/knowledge/is-ai-getting-more-expensive-2026', 'Is AI Getting More Expensive? The Pricing Reality in 2026', 'AI can feel cheaper for casual users and more expensive in production. Understand subscriptions, API tokens, agents, infrastructure, and total workflow cost.', undefined, '/is-ai-getting-more-expensive.jpg'),
+  page('/knowledge/will-ai-remain-accessible-free-vs-paid', 'Will AI Remain Accessible? Free vs Paid AI Tools in 2026', 'Free AI remains useful, but limits and premium features keep changing. Learn what accessibility really requires and how to build a resilient AI toolkit.', undefined, '/will-ai-remain-accessible.jpg'),
+  page('/knowledge/claude-opus-4-8-vs-gpt-5-5', 'Claude Opus 4.8 vs GPT-5.5: Which Model Should You Use?', 'Compare Claude Opus 4.8 and GPT-5.5 using official capabilities, API pricing, context, coding workflows, safeguards, and practical selection criteria.', undefined, '/claude-opus-4-8-vs-gpt-5-5.jpg'),
+  page('/knowledge/best-free-ai-tools-2026', 'Best Free AI Tools in 2026: A Practical, Honest Guide', 'Find genuinely useful free AI tools for writing, research, coding, images, and prompt engineering, plus the limits and privacy questions to check first.', undefined, '/best-free-ai-tools-2026.jpg'),
+  page('/knowledge/gemini-spark-vs-claude-cowork', 'Gemini Spark vs Claude Cowork: The AI Agent Race', 'Compare Gemini Spark and Claude Cowork on cloud persistence, desktop access, availability, permissions, privacy, workflows, and the right agent for your work.', undefined, '/ai-agent-wars-gemini-spark-vs-claude-cowork.jpg'),
+  page('/knowledge/nemotron-3-ultra-vs-minimax-m3', 'NVIDIA Nemotron 3 Ultra vs MiniMax M3: Open Model Comparison', 'Compare Nemotron 3 Ultra and MiniMax M3 on architecture, context, coding, multimodality, deployment requirements, licensing, and agent workflows.', undefined, '/nemotron-3-ultra-vs-minimax-m3.jpg'),
+  page('/knowledge/ai-pricing-war-chinese-vs-western-models', 'The AI Pricing War: Chinese vs Western Models in 2026', 'Compare Chinese and Western AI pricing without the hype, including list rates, open weights, hidden workflow costs, data governance, and procurement trade-offs.', undefined, '/ai-pricing-war-chinese-vs-western.jpg'),
 ];
 
 const articleDates = new Map(

@@ -1,4 +1,5 @@
 import { supplementalArticles } from './supplementalArticles';
+import { remainingJuneArticles } from './remainingJuneArticles';
 
 export interface Article {
   id: number;
@@ -10,6 +11,8 @@ export interface Article {
   date: string;
   updatedDate?: string;
   image: string;
+  imageAlt?: string;
+  imageFormats?: Array<'avif' | 'webp'>;
   content: string;
   faqs?: { q: string; a: string }[];
 }
@@ -241,4 +244,5 @@ export const articles: Article[] = [
     `
   },
   ...supplementalArticles,
+  ...remainingJuneArticles,
 ];

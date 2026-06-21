@@ -255,7 +255,8 @@ export default function Article() {
             <div className="aspect-[43/24] overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 mb-10">
               <OptimizedImage
                 src={article.image}
-                alt={article.title}
+                alt={article.imageAlt || article.title}
+                formats={article.imageFormats}
                 width="1376"
                 height="768"
                 sizes="(min-width: 1024px) 896px, 100vw"
