@@ -3,6 +3,11 @@ import type { Article } from './articles';
 const sourceLink = (href: string, label: string) =>
   `<li><a href="${href}" target="_blank" rel="noopener noreferrer">${label}</a></li>`;
 
+const webImageDefaults = {
+  imageFormats: ['webp'] as Array<'webp'>,
+  imageVersion: '20260621-2',
+};
+
 export const remainingJuneArticles: Article[] = [
   {
     id: 17,
@@ -14,7 +19,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/when-is-claude-fable-5-coming-back.jpg',
     imageAlt: 'Futuristic Claude Fable 5 model suspended inside a secure glass containment chamber with warning displays',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>Claude Fable 5 had one of the shortest public launches in recent AI history. Anthropic announced the Mythos-class model on June 9, 2026, describing it as its strongest generally available system for coding, knowledge work, vision, science, and long-running agents. Three days later, Anthropic said it had disabled access after receiving a US government export-control directive.</p>',
       '<p>There is no confirmed return date. Any calendar estimate circulating on social media is speculation unless Anthropic or the relevant authority publishes it. The useful question for teams is therefore not when to wait, but how to keep current work moving without building around an unavailable model.</p>',
@@ -54,7 +59,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/future-ai-usage-five-trends.jpg',
     imageAlt: 'Infographic connecting five AI trends including always-on agents, open models, multimodal tools, pricing, and global governance',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>AI use is moving beyond isolated chat sessions. The most important changes in 2026 concern how models act, what they can perceive, where they run, how providers charge, and which controls surround them. These five trends matter because they change workflow design, procurement, and responsibility, not merely benchmark rankings.</p>',
       '<h2>1. Agents Become Proactive and Persistent</h2>',
@@ -96,7 +101,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/is-ai-getting-more-expensive.jpg',
     imageAlt: 'Split illustration contrasting rising enterprise AI infrastructure costs with accessible consumer and open-source AI tools',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>The answer depends on what you mean by AI. Consumer access remains broad through free tiers and fixed subscriptions, while frontier API models, long-context processing, agent loops, and enterprise controls can raise the cost of serious deployment. Both trends are happening at once.</p>',
       '<h2>Consumer AI Is Still Accessible</h2>',
@@ -138,7 +143,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/will-ai-remain-accessible.jpg',
     imageAlt: 'Diverse users crossing a bridge between free and premium AI access beneath an unlocked Free AI symbol',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>AI accessibility is not a simple choice between free and paid. Real access depends on usage limits, device and internet requirements, language support, disability support, regional availability, privacy, digital skills, and whether a tool remains usable when a provider changes its plans.</p>',
       '<h2>What Free AI Still Provides</h2>',
@@ -179,7 +184,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/claude-opus-4-8-vs-gpt-5-5.jpg',
     imageAlt: 'Illustrated arena comparison between Claude Opus 4.8 and GPT-5.5 with coding and reasoning benchmark displays',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>Claude Opus 4.8 and GPT-5.5 are premium models built for serious coding, agents, and professional work. A useful comparison cannot come from one synthetic score. The right choice depends on task success, tool environment, context, price, latency, safety behavior, and how easily a team can verify the result.</p>',
       '<h2>Quick Comparison</h2>',
@@ -222,7 +227,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/best-free-ai-tools-2026.jpg',
     imageAlt: 'Colorful treasure chest surrounded by icons representing free AI assistants, research, coding, and creative tools',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>The best free AI tool is not the one with the longest feature list. It is the one that reliably completes your task without forcing sensitive data into the wrong system or trapping a workflow behind limits that change next week. Free tiers are valuable, but they are capacity offers rather than permanent guarantees.</p>',
       '<h2>Best Free General AI Assistants</h2>',
@@ -263,7 +268,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/ai-agent-wars-gemini-spark-vs-claude-cowork.jpg',
     imageAlt: 'Side-by-side AI workspaces showing Gemini Spark as a persistent cloud agent and Claude Cowork operating on a desktop computer',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>Gemini Spark and Claude Cowork represent two approaches to delegated AI work. Spark is designed around proactive cloud assistance inside Google\'s ecosystem. Cowork runs through Claude Desktop and works with selected local files, applications, and connectors. The important difference is not which mascot wins; it is where work runs and which permissions it receives.</p>',
       '<h2>Quick Comparison</h2>',
@@ -304,7 +309,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/nemotron-3-ultra-vs-minimax-m3.jpg',
     imageAlt: 'NVIDIA-themed green armored model facing a red MiniMax M3 figure holding a one-million-token context scroll',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>NVIDIA Nemotron 3 Ultra and MiniMax M3 push open models toward serious agentic work, but they solve different problems. Nemotron emphasizes efficient orchestration, transparent training resources, and NVIDIA deployment. M3 combines coding, native multimodality, computer use, and a one-million-token context in one open-weight system.</p>',
       '<h2>Quick Comparison</h2>',
@@ -345,7 +350,7 @@ export const remainingJuneArticles: Article[] = [
     date: 'Jun 21, 2026',
     image: '/ai-pricing-war-chinese-vs-western.jpg',
     imageAlt: 'AI pricing comparison showing premium Western model displays opposite lower-cost Chinese model shelves on a global balance scale',
-    imageFormats: ['webp'],
+    ...webImageDefaults,
     content: [
       '<p>Chinese AI providers have put intense price pressure on the global market, but the story is more complicated than cheap East versus expensive West. Model size, caching, output rates, service tiers, hosting, context, reliability, regulation, and data location all affect the bill. Country labels alone do not determine value.</p>',
       '<h2>Published Prices Show a Wide Range</h2>',

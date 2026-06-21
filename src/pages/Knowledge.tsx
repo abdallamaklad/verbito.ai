@@ -162,6 +162,7 @@ export default function Knowledge() {
                       src={featured.image}
                       alt={featured.imageAlt || featured.title}
                       formats={featured.imageFormats}
+                      cacheKey={featured.imageVersion}
                       width="1376"
                       height="768"
                       sizes="(min-width: 768px) 50vw, 100vw"
@@ -224,6 +225,7 @@ export default function Knowledge() {
                         src={article.image}
                         alt={article.imageAlt || article.title}
                         formats={article.imageFormats}
+                        cacheKey={article.imageVersion}
                         width="1376"
                         height="768"
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

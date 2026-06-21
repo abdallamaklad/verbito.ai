@@ -13,6 +13,7 @@ export interface Article {
   image: string;
   imageAlt?: string;
   imageFormats?: Array<'avif' | 'webp'>;
+  imageVersion?: string;
   content: string;
   faqs?: { q: string; a: string }[];
 }
