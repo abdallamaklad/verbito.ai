@@ -9,9 +9,96 @@ export interface Article {
   updatedDate?: string;
   image: string;
   content: string;
+  faqs?: { q: string; a: string }[];
 }
 
 export const articles: Article[] = [
+  {
+    id: 16,
+    slug: 'glm-5-2-vs-claude-fable-5',
+    title: 'GLM 5.2 vs Claude Fable 5: The Most Important AI Battle of 2026',
+    excerpt: 'Compare GLM 5.2 and Claude Fable 5 on availability, pricing, context, openness, coding workflows, safeguards, and the best use cases in 2026 for teams.',
+    category: 'AI Tools',
+    readTime: '11 min',
+    date: 'Jun 21, 2026',
+    image: '/glm-5-2-vs-claude-fable-5.jpg',
+    content: [
+      "<p>GLM 5.2 and Claude Fable 5 arrived in June 2026 with sharply different approaches to frontier AI. Z.ai focused GLM 5.2 on open deployment, a one-million-token context window, and long-horizon engineering. Anthropic positioned Fable 5 as a premium Mythos-class model with additional safeguards for broad use.</p>",
+      "<p>The comparison changed almost immediately. Anthropic launched Fable 5 on June 9, then reported on June 12 that access had become unavailable after a US government export-control directive. GLM 5.2, meanwhile, is available through Z.ai's API, Coding Plan, hosted chat, and public model weights. This guide compares what each company has actually documented as of June 21, 2026.</p>",
+
+      "<h2>GLM 5.2 vs Claude Fable 5: Quick Comparison</h2>",
+      "<table><thead><tr><th scope=\"col\">Factor</th><th scope=\"col\">GLM 5.2</th><th scope=\"col\">Claude Fable 5</th></tr></thead><tbody>",
+      "<tr><td>Current availability</td><td>Available through Z.ai and public weights</td><td>Unavailable as of June 12, 2026</td></tr>",
+      "<tr><td>Model access</td><td>API, Coding Plan, Z.ai chat, local deployment</td><td>Proprietary Claude API and cloud marketplaces when available</td></tr>",
+      "<tr><td>Documented context</td><td>1M tokens; 128K maximum output</td><td>Designed for long-running tasks; no fixed context figure on the product page</td></tr>",
+      "<tr><td>API price per 1M tokens</td><td>$1.40 input / $4.40 output</td><td>$10 input / $50 output</td></tr>",
+      "<tr><td>Weights</td><td>Publicly available</td><td>Closed</td></tr>",
+      "<tr><td>Primary positioning</td><td>Long-horizon coding and project-scale engineering</td><td>Frontier coding, knowledge work, vision, and agents with safeguards</td></tr>",
+      "</tbody></table>",
+
+      "<h2>What Is GLM 5.2?</h2>",
+      "<p>GLM 5.2 is Z.ai's flagship text model for long-horizon tasks. Its official documentation lists a one-million-token context length, a 128K maximum output, multiple thinking modes, function calling, context caching, structured output, and MCP integration. Z.ai emphasizes whole-codebase analysis, cross-file refactoring, research reproduction, and other tasks that require the model to maintain decisions over extended workflows.</p>",
+      "<h3>The Important Upgrade From GLM 5.1</h3>",
+      "<p>The version change is more than a name. Z.ai says GLM 5.2 extends usable context to one million tokens and introduces architectural and inference improvements for long sequences. Its documentation reports 62.1 on SWE-bench Pro versus 58.4 for GLM 5.1, and 81.0 on Terminal-Bench 2.1 versus 62.0. These are vendor-reported benchmark results, so teams should still test the model on their own repositories and quality gates.</p>",
+      "<h3>GLM 5.2 Pricing and Deployment</h3>",
+      "<p>Z.ai's current developer pricing lists GLM 5.2 at $1.40 per million input tokens, $0.26 for cached input, and $4.40 per million output tokens. Public weights support local deployment through frameworks listed by Z.ai, while the hosted API uses the model identifier <code>glm-5.2</code>. This makes GLM 5.2 the more flexible option for teams that need cost control or deployment choice.</p>",
+
+      "<h2>What Is Claude Fable 5?</h2>",
+      "<p>Anthropic announced Claude Fable 5 on June 9, 2026 as a Mythos-class model made suitable for general use through additional cybersecurity, biology, chemistry, and model-distillation safeguards. Anthropic described it as its strongest generally released model for ambitious coding, knowledge work, vision, and long-running agents.</p>",
+      "<h3>Fable 5 Safeguards and Pricing</h3>",
+      "<p>When Fable's classifiers flag certain high-risk requests, Anthropic routes them to Claude Opus 4.8 instead. The company also requires 30-day data retention for safety monitoring on Fable traffic. Published pricing is $10 per million input tokens and $50 per million output tokens, with prompt-caching discounts and a premium for US-only inference.</p>",
+      "<h3>Why Claude Fable 5 Is Unavailable</h3>",
+      "<p>Anthropic's June 12 statement says the US government issued an export-control directive barring access by foreign nationals. Anthropic said the practical result was disabling Fable 5 and Mythos 5 for all customers while it worked to restore service. The statement links the directive to government concerns about a possible jailbreak; it does not provide a confirmed restoration date.</p>",
+
+      "<h2>Which Model Is Better for Coding?</h2>",
+      "<p>For immediate access, repository-scale context, local deployment, and lower API cost, GLM 5.2 has the practical advantage. Its million-token window is designed for project-level codebases, and its official examples focus on audits, migrations, multi-file refactors, tests, and deployment verification.</p>",
+      "<p>Fable 5 was positioned for even longer and more autonomous work. Anthropic reports strong results on partner coding evaluations and says the model can plan, delegate, test, and revise work over days. Those capabilities cannot currently be evaluated by ordinary customers because access is suspended.</p>",
+
+      "<h2>Open Access vs Controlled Capability</h2>",
+      "<p>The most useful distinction is not a single benchmark score. GLM 5.2 gives developers public weights, hosted access, and comparatively low token prices. Fable 5 offers a proprietary frontier model wrapped in safeguards, monitoring, and premium infrastructure. One prioritizes deployment freedom; the other prioritizes managed access to higher-risk capabilities.</p>",
+      "<p>Neither approach is universally better. Organizations handling sensitive code may value local deployment and data control. Others may prefer Anthropic's managed safety systems and enterprise integrations once Fable returns. Procurement, privacy, availability, and total workflow cost matter as much as leaderboard position.</p>",
+
+      "<h2>Who Should Choose GLM 5.2?</h2>",
+      "<ul><li>Teams that need a model they can use today.</li><li>Developers working with large repositories or long project histories.</li><li>Products where input and output token costs materially affect margins.</li><li>Organizations that want public weights or local deployment options.</li><li>Engineers willing to validate vendor benchmarks against their own tests.</li></ul>",
+
+      "<h2>Who Should Consider Claude Fable 5?</h2>",
+      "<ul><li>Teams that can wait for Anthropic to restore access.</li><li>Enterprises already standardized on Claude and its cloud marketplaces.</li><li>Workflows that benefit from premium long-running agents, vision, and knowledge work.</li><li>Organizations comfortable with Fable's safeguards and 30-day safety-retention requirement.</li><li>Buyers prepared for substantially higher per-token pricing.</li></ul>",
+
+      "<h2>The Bottom Line</h2>",
+      "<p>As of June 21, 2026, GLM 5.2 wins on availability, price, context transparency, and deployment flexibility. Claude Fable 5 remains the more ambitious managed product on paper, but a suspended model cannot carry a production workload. The sensible decision is to test GLM 5.2 now and reevaluate Fable 5 after Anthropic restores access and customers can benchmark both under the same conditions.</p>",
+
+      "<h2>Sources</h2>",
+      "<ul>",
+      "<li><a href=\"https://docs.z.ai/guides/llm/glm-5.2\" target=\"_blank\" rel=\"noopener noreferrer\">Z.ai: GLM 5.2 model documentation</a></li>",
+      "<li><a href=\"https://docs.z.ai/guides/overview/pricing\" target=\"_blank\" rel=\"noopener noreferrer\">Z.ai: API pricing</a></li>",
+      "<li><a href=\"https://z.ai/blog/glm-5.2\" target=\"_blank\" rel=\"noopener noreferrer\">Z.ai: GLM 5.2 technical announcement</a></li>",
+      "<li><a href=\"https://www.anthropic.com/news/claude-fable-5-mythos-5\" target=\"_blank\" rel=\"noopener noreferrer\">Anthropic: Claude Fable 5 and Claude Mythos 5 launch</a></li>",
+      "<li><a href=\"https://www.anthropic.com/news/fable-mythos-access\" target=\"_blank\" rel=\"noopener noreferrer\">Anthropic: Statement on suspended Fable 5 and Mythos 5 access</a></li>",
+      "</ul>",
+    ].join(''),
+    faqs: [
+      {
+        q: 'Is GLM 5.2 available now?',
+        a: 'Yes. Z.ai documents GLM 5.2 access through its hosted API, Coding Plan, and Z.ai chat, and says public model weights are available for local deployment. API customers use the model name glm-5.2. Availability can vary by provider and region, so verify capacity before committing a production workload.',
+      },
+      {
+        q: 'How much does GLM 5.2 cost compared with Claude Fable 5?',
+        a: 'Z.ai lists GLM 5.2 at $1.40 per million input tokens and $4.40 per million output tokens. Anthropic lists Fable 5 at $10 input and $50 output per million tokens. Caching, regional inference, subscriptions, and provider markups can change the effective total cost.',
+      },
+      {
+        q: 'Why is Claude Fable 5 unavailable?',
+        a: 'Anthropic says a US government export-control directive required it to prevent foreign-national access to Fable 5 and Mythos 5. To comply, the company disabled access for all customers on June 12, 2026. Anthropic linked the directive to concerns about a possible jailbreak and has not confirmed a restoration date.',
+      },
+      {
+        q: 'Is GLM 5.2 better than Claude Fable 5 for coding?',
+        a: 'GLM 5.2 is the practical choice today because it is available, supports a documented one-million-token context, offers public weights, and costs less. Fable 5 may be stronger on some frontier coding and agentic tasks, but customers cannot run a fair current comparison while Anthropic access remains suspended.',
+      },
+      {
+        q: 'Can I use Verbito prompts with GLM 5.2 and Claude Fable 5?',
+        a: 'Yes. Verbito creates structured prompts that can be adapted to both model families. Specify the role, repository context, constraints, expected output, and verification steps. For long coding tasks, break the goal into milestones and require each model to run tests before it reports completion.',
+      },
+    ],
+  },
   {
     id: 1,
     slug: 'what-is-prompt-engineering-beginners-guide',

@@ -12,6 +12,7 @@ const page = (pathname, title, description, heading = title, image = '/og-defaul
 });
 
 const articlePages = [
+  page('/knowledge/glm-5-2-vs-claude-fable-5', 'GLM 5.2 vs Claude Fable 5: The Most Important AI Battle of 2026', 'Compare GLM 5.2 and Claude Fable 5 on availability, pricing, context, openness, coding workflows, safeguards, and the best use cases in 2026 for teams.', undefined, '/glm-5-2-vs-claude-fable-5.jpg'),
   page('/knowledge/what-is-prompt-engineering-beginners-guide', "What Is Prompt Engineering? A Complete Beginner's Guide for 2026", 'Learn what prompt engineering is, why it matters, and how to get better results from ChatGPT, Claude, and other AI tools.', undefined, '/blog-featured-1.jpg'),
   page('/knowledge/chatgpt-vs-claude-vs-gemini-2026', 'ChatGPT vs Claude vs Gemini: Which AI Model Should You Use in 2026?', 'Compare the strengths, weaknesses, and best use cases of ChatGPT, Claude, and Gemini.', undefined, '/blog-featured-2.jpg'),
   page('/knowledge/10-prompt-engineering-techniques-that-actually-work', '10 Prompt Engineering Techniques That Actually Work', 'Use practical prompt engineering techniques to improve AI output quality and consistency.', undefined, '/blog-featured-3.jpg'),

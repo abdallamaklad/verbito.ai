@@ -20,7 +20,7 @@ import SEOHead from '../components/shared/SEOHead';
 import OptimizedImage from '../components/shared/OptimizedImage';
 import { articles } from '../lib/data/articles';
 
-const articleFaqs = [
+const defaultArticleFaqs = [
   { q: 'How do I apply these techniques to my work?', a: 'Start with one technique at a time. Pick the method that seems most relevant to your current projects and practice it for a week before adding another.' },
   { q: 'Which AI model works best with these prompts?', a: 'Most techniques work across major models including ChatGPT, Claude, and Gemini. Any model-specific considerations are noted in the article.' },
   { q: 'Can I share these prompts with my team?', a: 'Yes. Verbito knowledge articles can be shared with your team with credit to Verbito.ai as the source.' },
@@ -127,6 +127,7 @@ export default function Article() {
   const reviewedDate = article.updatedDate
     ? new Date(`${article.updatedDate} 12:00:00 UTC`).toISOString().slice(0, 10)
     : null;
+  const articleFaqs = article.faqs?.length ? article.faqs : defaultArticleFaqs;
 
   return (
     <>
@@ -177,15 +178,15 @@ export default function Article() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <Link to="/knowledge" className="hover:text-violet-600 transition-colors flex items-center gap-1">
+            <div className="flex items-center gap-2 overflow-hidden text-sm text-gray-500">
+              <Link to="/knowledge" className="flex shrink-0 items-center gap-1 whitespace-nowrap transition-colors hover:text-violet-600">
                 <BookOpen className="w-3.5 h-3.5" />
                 {tt.hubTitle}
               </Link>
               <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-gray-400">{article.category}</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-gray-400 truncate max-w-[200px]">{article.title}</span>
+              <span className="shrink-0 whitespace-nowrap text-gray-400">{article.category}</span>
+              <ChevronRight className="hidden h-3.5 w-3.5 sm:block" />
+              <span className="hidden max-w-[200px] truncate text-gray-400 sm:block">{article.title}</span>
             </div>
           </motion.div>
 
@@ -230,7 +231,7 @@ export default function Article() {
             </header>
 
             {/* Hero Image */}
-            <div className="aspect-[16/9] sm:aspect-[21/9] overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 mb-10">
+            <div className="aspect-[43/24] overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 mb-10">
               <OptimizedImage
                 src={article.image}
                 alt={article.title}
