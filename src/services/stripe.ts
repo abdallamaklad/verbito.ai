@@ -1,4 +1,4 @@
-import type { BillingPeriod,CheckoutSessionResponse,PlanType,PortalSessionResponse,PricingPlan } from '@/types';
+import type { BillingPeriod,CheckoutSessionResponse,CheckoutSessionStatusResponse,PlanType,PortalSessionResponse,PricingPlan } from '@/types';
 import { analytics } from './analytics';
 import { invokeEdgeFunction,isBackendConfigured } from './backend';
 
@@ -21,12 +21,19 @@ export async function createCheckoutSession(planId: string, billingPeriod: Billi
   if (!isPaidPlan(planId)) throw new Error('Please choose a paid plan.');
 
   if (isBackendConfigured()) {
-    analytics.track('checkout_started', { planId, billingPeriod });
+    const plan = getPlanById(planId);
+    const value = billingPeriod === 'yearly' ? plan?.yearlyPrice : plan?.monthlyPrice;
+    const attribution = await analytics.getAttributionContext();
+    analytics.track('begin_checkout', {
+      currency: 'USD',
+      value,
+      items: [{ item_id: `${planId}_${billingPeriod}`, item_name: `${plan?.name || planId} ${billingPeriod}`, price: value, quantity: 1 }],
+    });
     return invokeEdgeFunction<CheckoutSessionResponse>('create-checkout-session', {
       planId,
       billingPeriod,
-      successUrl: `${window.location.origin}/billing?checkout=success`,
-      cancelUrl: `${window.location.origin}/pricing?checkout=cancelled`,
+      gaClientId: attribution.clientId,
+      gaSessionId: attribution.sessionId,
     });
   }
 
@@ -34,18 +41,21 @@ export async function createCheckoutSession(planId: string, billingPeriod: Billi
     throw new Error('Checkout is temporarily unavailable because the production backend is not configured.');
   }
 
-  analytics.track('checkout_started', { planId, billingPeriod, mock: true });
-  return { url: `/checkout?plan=${planId}&period=${billingPeriod}` };
+  throw new Error('Embedded checkout requires the Supabase backend.');
 }
 
 export async function createCourseCheckoutSession(courseSlug = 'master-prompt-engineering'): Promise<CheckoutSessionResponse> {
   if (isBackendConfigured()) {
-    analytics.track('checkout_started', { productType: 'course', courseSlug });
+    const attribution = await analytics.getAttributionContext();
+    analytics.track('begin_checkout', {
+      currency: 'USD',
+      items: [{ item_id: courseSlug, item_name: 'Master Prompt Engineering', quantity: 1 }],
+    });
     return invokeEdgeFunction<CheckoutSessionResponse>('create-checkout-session', {
       productType: 'course',
       courseSlug,
-      successUrl: `${window.location.origin}/course/dashboard?checkout=success`,
-      cancelUrl: `${window.location.origin}/course/${courseSlug}?checkout=cancelled`,
+      gaClientId: attribution.clientId,
+      gaSessionId: attribution.sessionId,
     });
   }
 
@@ -53,8 +63,11 @@ export async function createCourseCheckoutSession(courseSlug = 'master-prompt-en
     throw new Error('Course checkout is temporarily unavailable because the production backend is not configured.');
   }
 
-  analytics.track('checkout_started', { productType: 'course', courseSlug, mock: true });
-  return { url: '/course/dashboard?checkout=mock-success' };
+  throw new Error('Embedded checkout requires the Supabase backend.');
+}
+
+export async function getCheckoutSessionStatus(sessionId: string): Promise<CheckoutSessionStatusResponse> {
+  return invokeEdgeFunction<CheckoutSessionStatusResponse>('get-checkout-session', { sessionId });
 }
 
 export async function createPortalSession(): Promise<PortalSessionResponse> {

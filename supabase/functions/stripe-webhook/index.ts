@@ -64,6 +64,42 @@ async function handleCheckoutCompleted(supabase: ReturnType<typeof adminClient>,
   }
 }
 
+async function sendGaPurchase(session: Stripe.Checkout.Session) {
+  const apiSecret = Deno.env.get('GA4_API_SECRET');
+  const clientId = session.metadata?.ga_client_id;
+  if (!apiSecret || !clientId || session.payment_status !== 'paid') return;
+
+  const measurementId = Deno.env.get('GA4_MEASUREMENT_ID') || 'G-GT702846JY';
+  const isCourse = session.metadata?.product_type === 'course';
+  const itemId = isCourse
+    ? session.metadata?.course_slug || 'master-prompt-engineering'
+    : `${session.metadata?.plan_type || 'subscription'}_${session.metadata?.billing_period || 'unknown'}`;
+  const itemName = session.metadata?.product_name || (isCourse ? 'Master Prompt Engineering' : 'Verbito subscription');
+  const value = (session.amount_total || 0) / 100;
+  const params: Record<string, unknown> = {
+    transaction_id: session.id,
+    value,
+    currency: (session.currency || 'usd').toUpperCase(),
+    engagement_time_msec: 1,
+    items: [{ item_id: itemId, item_name: itemName, price: value, quantity: 1 }],
+  };
+  if (session.metadata?.ga_session_id) params.session_id = session.metadata.ga_session_id;
+
+  const response = await fetch(
+    `https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(measurementId)}&api_secret=${encodeURIComponent(apiSecret)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: clientId,
+        user_id: session.client_reference_id || session.metadata?.user_id,
+        events: [{ name: 'purchase', params }],
+      }),
+    },
+  );
+  if (!response.ok) throw new Error(`GA4 purchase event failed with status ${response.status}.`);
+}
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders(request) });
 
@@ -96,8 +132,12 @@ Deno.serve(async (request) => {
       });
     }
 
-    if (event.type === 'checkout.session.completed') {
-      await handleCheckoutCompleted(supabase, event.data.object as Stripe.Checkout.Session);
+    if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      if (session.payment_status === 'paid' || session.payment_status === 'no_payment_required') {
+        await handleCheckoutCompleted(supabase, session);
+        await sendGaPurchase(session);
+      }
     }
 
     if (

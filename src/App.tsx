@@ -12,6 +12,8 @@ const Affiliate = lazy(() => import('./pages/Affiliate'));
 const Article = lazy(() => import('./pages/Article'));
 const Billing = lazy(() => import('./pages/Billing'));
 const Collections = lazy(() => import('./pages/Collections'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const CheckoutComplete = lazy(() => import('./pages/CheckoutComplete'));
 const Consulting = lazy(() => import('./pages/Consulting'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Cookies = lazy(() => import('./pages/Cookies'));
@@ -86,7 +88,7 @@ export default function App() {
   useEffect(() => {
     analytics.pageView(location.pathname, { search: location.search });
 
-    const privateRoute = /^(?:\/(?:login|signup|forgot-password|dashboard|account|admin|billing|collections|saved-prompts)(?:\/|$)|\/course\/(?:dashboard|lesson|certificate)(?:\/|$))/.test(location.pathname);
+    const privateRoute = /^(?:\/(?:login|signup|forgot-password|dashboard|account|admin|billing|checkout|collections|saved-prompts)(?:\/|$)|\/course\/(?:dashboard|lesson|certificate)(?:\/|$))/.test(location.pathname);
     let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
     if (!robots) {
       robots = document.createElement('meta');
@@ -113,6 +115,8 @@ export default function App() {
           <Route path="admin" element={<Admin />} />
           <Route path="affiliate-disclosure" element={<Affiliate />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="checkout/complete" element={<CheckoutComplete />} />
           <Route path="collections" element={<Collections />} />
           <Route path="consulting" element={<Consulting />} />
           <Route path="contact" element={<Contact />} />

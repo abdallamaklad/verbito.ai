@@ -3,7 +3,6 @@ import { Check,ChevronDown,ChevronUp,Sparkles,Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import SEOHead from '../components/shared/SEOHead';
-import { createCheckoutSession } from '../services/stripe';
 import { supabase } from '../services/supabase';
 import type { BillingPeriod,PlanType } from '../types';
 
@@ -96,7 +95,6 @@ export default function Pricing() {
   const navigate = useNavigate();
   const [isAnnual, setIsAnnual] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const fadeUp = {
     hidden: { opacity: 0, y: 24 },
@@ -115,15 +113,7 @@ export default function Pricing() {
     }
 
     setCheckoutLoading(planId);
-    setCheckoutError(null);
-    try {
-      const { url } = await createCheckoutSession(planId, billingPeriod);
-      window.location.assign(url);
-    } catch (error) {
-      setCheckoutError(error instanceof Error ? error.message : 'Unable to start checkout. Please try again or contact support.');
-    } finally {
-      setCheckoutLoading(null);
-    }
+    navigate(`/checkout?plan=${planId}&period=${billingPeriod}`);
   };
 
   return (
@@ -181,11 +171,6 @@ export default function Pricing() {
           </motion.div>
 
           {/* Plans Grid */}
-          {checkoutError && (
-            <div className="mb-6 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300">
-              {checkoutError}
-            </div>
-          )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {plans.map((plan, i) => (
               <motion.div

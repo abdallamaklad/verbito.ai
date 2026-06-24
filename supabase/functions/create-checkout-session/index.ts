@@ -36,6 +36,11 @@ Deno.serve(async (request) => {
       apiVersion: '2025-05-28.basil',
       httpClient: Stripe.createFetchHttpClient(),
     });
+    const returnUrl = `${siteUrl}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`;
+    const analyticsMetadata = {
+      ...(body.gaClientId ? { ga_client_id: body.gaClientId.slice(0, 100) } : {}),
+      ...(body.gaSessionId ? { ga_session_id: body.gaSessionId.slice(0, 100) } : {}),
+    };
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -67,22 +72,24 @@ Deno.serve(async (request) => {
 
       const priceId = course.stripe_price_id || requireEnv('STRIPE_COURSE_PRICE_ID');
       const session = await stripe.checkout.sessions.create({
+        ui_mode: 'embedded',
         mode: 'payment',
         customer: customerId,
         line_items: [{ price: priceId, quantity: 1 }],
-        success_url: body.successUrl || `${siteUrl}/course/dashboard?checkout=success`,
-        cancel_url: body.cancelUrl || `${siteUrl}/course/master-prompt-engineering?checkout=cancelled`,
+        return_url: returnUrl,
         client_reference_id: user.id,
         metadata: {
           user_id: user.id,
           product_type: 'course',
           course_id: course.id,
           course_slug: courseSlug,
+          product_name: 'Master Prompt Engineering',
+          ...analyticsMetadata,
         },
       });
 
-      if (!session.url) throw new Error('Stripe did not return a checkout URL.');
-      return jsonResponse(request, { url: session.url });
+      if (!session.client_secret) throw new Error('Stripe did not return an embedded checkout client secret.');
+      return jsonResponse(request, { clientSecret: session.client_secret });
     }
 
     const planId = body.planId;
@@ -92,21 +99,27 @@ Deno.serve(async (request) => {
 
     const priceId = requireEnv(PRICE_ENV[planId][billingPeriod]);
     const session = await stripe.checkout.sessions.create({
+      ui_mode: 'embedded',
       mode: 'subscription',
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: body.successUrl || `${siteUrl}/billing?checkout=success`,
-      cancel_url: body.cancelUrl || `${siteUrl}/pricing?checkout=cancelled`,
+      return_url: returnUrl,
       client_reference_id: user.id,
       subscription_data: {
         metadata: { user_id: user.id, plan_type: planId, billing_period: billingPeriod },
       },
-      metadata: { user_id: user.id, plan_type: planId, billing_period: billingPeriod },
+      metadata: {
+        user_id: user.id,
+        plan_type: planId,
+        billing_period: billingPeriod,
+        product_name: `${planId[0].toUpperCase()}${planId.slice(1)} ${billingPeriod} plan`,
+        ...analyticsMetadata,
+      },
       allow_promotion_codes: true,
     });
 
-    if (!session.url) throw new Error('Stripe did not return a checkout URL.');
-    return jsonResponse(request, { url: session.url });
+    if (!session.client_secret) throw new Error('Stripe did not return an embedded checkout client secret.');
+    return jsonResponse(request, { clientSecret: session.client_secret });
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : 'Unable to start checkout.';

@@ -54,12 +54,16 @@ export interface CheckoutSessionRequest {
   billingPeriod?: BillingPeriod;
   productType?: 'subscription' | 'course';
   courseSlug?: string;
-  successUrl?: string;
-  cancelUrl?: string;
+  gaClientId?: string;
+  gaSessionId?: string;
 }
 
 export interface CheckoutSessionResponse {
-  url: string;
+  clientSecret: string;
+}
+
+export interface CheckoutSessionStatusRequest {
+  sessionId: string;
 }
 
 export interface PortalSessionRequest {

@@ -227,12 +227,28 @@ export interface CheckoutSessionRequest {
   billingPeriod?: BillingPeriod;
   productType?: 'subscription' | 'course';
   courseSlug?: string;
-  successUrl?: string;
-  cancelUrl?: string;
+  gaClientId?: string;
+  gaSessionId?: string;
 }
 
 export interface CheckoutSessionResponse {
-  url: string;
+  clientSecret: string;
+}
+
+export interface CheckoutSessionStatusRequest {
+  sessionId: string;
+}
+
+export interface CheckoutSessionStatusResponse {
+  id: string;
+  status: 'open' | 'complete' | 'expired';
+  paymentStatus: 'paid' | 'unpaid' | 'no_payment_required';
+  mode: 'payment' | 'subscription' | 'setup';
+  amountTotal: number;
+  currency: string;
+  productType: 'subscription' | 'course';
+  productId: string;
+  productName: string;
 }
 
 export interface PortalSessionRequest {

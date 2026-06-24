@@ -32,9 +32,8 @@ Users,
 Zap
 } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import SEOHead from '../components/shared/SEOHead';
-import { createCourseCheckoutSession } from '../services/stripe';
 import {
 audienceCards,bonuses,
 courseModules,
@@ -131,6 +130,7 @@ function CourseFaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function Course() {
+  const navigate = useNavigate();
   const tt = { ...courseLandingFallbacks, ...usePageTranslations(cst) };
   const ct = usePageTranslations(cm);
   const [openModule, setOpenModule] = useState<number | null>(0);
@@ -138,16 +138,9 @@ export default function Course() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const startCourseCheckout = async () => {
-    setCheckoutLoading(true);
     setCheckoutError(null);
-    try {
-      const { url } = await createCourseCheckoutSession();
-      window.location.assign(url);
-    } catch (error) {
-      setCheckoutError(error instanceof Error ? error.message : 'Unable to start course checkout.');
-    } finally {
-      setCheckoutLoading(false);
-    }
+    setCheckoutLoading(true);
+    navigate('/checkout?product=course&course=master-prompt-engineering');
   };
 
   const fadeUp = {

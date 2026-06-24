@@ -52,6 +52,8 @@ STRIPE_PRO_YEARLY_PRICE_ID=price_...
 STRIPE_UNLIMITED_MONTHLY_PRICE_ID=price_...
 STRIPE_UNLIMITED_YEARLY_PRICE_ID=price_...
 STRIPE_COURSE_PRICE_ID=price_...
+GA4_MEASUREMENT_ID=G-GT702846JY
+GA4_API_SECRET=your-ga4-measurement-protocol-secret
 ```
 
 Never expose `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, or webhook secrets in `VITE_*` env.
@@ -65,6 +67,7 @@ Never expose `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`,
 supabase functions deploy generate-prompt
 supabase functions deploy create-checkout-session
 supabase functions deploy create-portal-session
+supabase functions deploy get-checkout-session
 supabase functions deploy stripe-webhook
 ```
 
