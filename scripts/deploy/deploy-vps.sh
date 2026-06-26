@@ -67,8 +67,34 @@ verbito.ai, www.verbito.ai {
 }
 """
 
+def replace_marked_block(source: str, block_marker: str, replacement: str) -> str:
+    start = source.find(block_marker)
+    if start == -1:
+        return source.rstrip() + "\n\n" + replacement
+
+    open_brace = source.find("{", start)
+    if open_brace == -1:
+        raise SystemExit(f"Could not find opening brace for {block_marker}")
+
+    depth = 0
+    end = None
+    for index in range(open_brace, len(source)):
+        char = source[index]
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                end = index + 1
+                break
+
+    if end is None:
+        raise SystemExit(f"Could not find closing brace for {block_marker}")
+
+    return source[:start].rstrip() + "\n\n" + replacement + "\n" + source[end:].lstrip()
+
 if marker in text:
-    text = text[:text.index(marker)] + block
+    text = replace_marked_block(text, marker, block)
 else:
     text = text.rstrip() + "\n\n" + block
 
